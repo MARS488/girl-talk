@@ -1075,6 +1075,61 @@ const communityPosts = [];
 const psAnswered = {};
 let psScore = 0;
 
+// ─── AI CONFIG ───
+// The AI features call Claude. Pick ONE of two modes:
+//
+//   1. PROXY (recommended for production): point `proxyUrl` at your own backend
+//      endpoint that holds the API key server-side and forwards the request body
+//      to https://api.anthropic.com/v1/messages. The key never reaches the browser.
+//
+//   2. DIRECT (dev / demo only): drop your key in `apiKey`. This sends the key
+//      from the browser — anyone viewing the page can read it. Never ship this.
+//
+// If neither is set, the AI tabs show a clear "not configured" message instead of
+// silently failing.
+const GT_CONFIG = {
+  proxyUrl: '',                 // e.g. '/api/decode'  — preferred
+  apiKey:   '',                 // e.g. 'sk-ant-...'   — dev only, exposes the key
+  model:    'claude-sonnet-4-6'
+};
+
+// Single entry point for every AI feature. Returns parsed JSON from Claude's reply.
+async function askGirlTalk(system, userContent, maxTokens = 900) {
+  const body = {
+    model: GT_CONFIG.model,
+    max_tokens: maxTokens,
+    system,
+    messages: [{ role: 'user', content: userContent }]
+  };
+
+  let res;
+  if (GT_CONFIG.proxyUrl) {
+    res = await fetch(GT_CONFIG.proxyUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body)
+    });
+  } else if (GT_CONFIG.apiKey) {
+    res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': GT_CONFIG.apiKey,
+        'anthropic-version': '2023-06-01',
+        'anthropic-dangerous-direct-browser-access': 'true'
+      },
+      body: JSON.stringify(body)
+    });
+  } else {
+    throw new Error('AI not configured — set GT_CONFIG.proxyUrl or GT_CONFIG.apiKey');
+  }
+
+  if (!res.ok) throw new Error('API ' + res.status);
+  const data = await res.json();
+  const raw = (data.content || []).filter(b => b.type === 'text').map(b => b.text).join('');
+  return JSON.parse(raw.replace(/```json|```/g, '').trim());
+}
+
 // ─── THEME ───
 function toggleTheme() {
   const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
@@ -1169,18 +1224,10 @@ Respond with ONLY valid JSON. No preamble. No markdown. No code fences:
 Rules: probs sum to 100. flags=[] if none. Be SPECIFIC to her situation.`;
 
   try {
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST', headers: {'Content-Type':'application/json'},
-      body: JSON.stringify({ model:'claude-sonnet-4-20250514', max_tokens:1000, system:sys,
-        messages:[{role:'user',content:`Situation: ${activePill}\n\n${input}`}] })
-    });
-    if (!res.ok) throw new Error('API ' + res.status);
-    const data = await res.json();
-    const raw = (data.content||[]).filter(b=>b.type==='text').map(b=>b.text).join('');
-    const r = JSON.parse(raw.replace(/```json|```/g,'').trim());
+    const r = await askGirlTalk(sys, `Situation: ${activePill}\n\n${input}`, 1000);
     lastResult = r; renderDecodeOutput(r);
   } catch(err) {
-    document.getElementById('decodeText').textContent = "Couldn't connect — check your network and try again. (" + err.message + ")";
+    document.getElementById('decodeText').textContent = "Couldn't decode — " + err.message;
     document.getElementById('flagSection').style.display = 'none';
     document.getElementById('output').classList.add('visible');
   } finally {
@@ -1253,12 +1300,7 @@ async function analyzeRedFlags() {
 Respond with ONLY valid JSON, no markdown:
 {"verdict":"clear"|"caution"|"danger","verdictEmoji":"✅"|"⚠️"|"🚨","verdictText":"One specific sentence about this situation.","flags":["Flag name 1","Flag name 2"],"patternType":"One sentence on what type of pattern this is.","projection":"One sentence on where this typically goes if unchanged.","whatSheShould":"One key insight she needs to understand.","moves":[{"label":"Option A — name","text":"exact words"},{"label":"Option B — name","text":"exact words"},{"label":"Option C — name","text":"exact words"}],"bottomLine":"One powerful final sentence."}`;
   try {
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
-      method:'POST', headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:900,system:sys,messages:[{role:'user',content:input}]})
-    });
-    const data = await res.json();
-    const r = JSON.parse((data.content||[]).filter(b=>b.type==='text').map(b=>b.text).join('').replace(/```json|```/g,'').trim());
+    const r = await askGirlTalk(sys, input, 900);
     const banner = document.getElementById('rfBanner');
     banner.className = 'verdict-banner ' + (r.verdict||'caution');
     document.getElementById('rfEmoji').textContent = r.verdictEmoji||'⚠️';
@@ -1272,7 +1314,7 @@ Respond with ONLY valid JSON, no markdown:
     document.getElementById('rfBottom').textContent = '"' + (r.bottomLine||'') + '" ⚡';
     document.getElementById('rfResult').classList.add('visible');
     setTimeout(() => document.getElementById('rfResult').scrollIntoView({behavior:'smooth',block:'start'}), 100);
-  } catch(err) { showToast('Connection issue — try again'); }
+  } catch(err) { showToast('Couldn\'t reach the AI — ' + err.message, 3500); }
   finally { btn.disabled=false; btn.innerHTML='Check for Red Flags →'; }
 }
 
@@ -1379,12 +1421,7 @@ Respond ONLY with valid JSON, no markdown:
 {"verdict":"clear"|"caution"|"danger","verdictEmoji":"✅"|"⚠️"|"🚨","verdictText":"One specific sentence.","tactics":["Tactic 1","Tactic 2"],"riskLevel":"One sentence.","whatHeWants":"Blunt sentence on what his behavior suggests he wants.","whatSheShould":"One key insight.","moves":[{"label":"Option A — name","text":"real natural words"},{"label":"Option B — name","text":"different energy"},{"label":"Option C — name","text":"bold option"}],"bottomLine":"One powerful final line."}
 Tactics to name: Love Bombing, Breadcrumbing, DARVO, Triangulation, Future Faking, Orbiting, Soft Ghosting, Negging, Intermittent Reinforcement, Situationship Lock-In, Strategic Unavailability, Mirroring.`;
   try {
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
-      method:'POST', headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:900,system:sys,messages:[{role:'user',content:input}]})
-    });
-    const data = await res.json();
-    const r = JSON.parse((data.content||[]).filter(b=>b.type==='text').map(b=>b.text).join('').replace(/```json|```/g,'').trim());
+    const r = await askGirlTalk(sys, input, 900);
     document.getElementById('psBanner').className = 'verdict-banner '+(r.verdict||'caution');
     document.getElementById('psEmoji').textContent = r.verdictEmoji||'⚠️';
     document.getElementById('psLabel').textContent = {clear:'🟢 Looks Okay',caution:'⚠️ Watch Closely',danger:'🚨 Player Alert'}[r.verdict]||'⚠️';
@@ -1398,7 +1435,7 @@ Tactics to name: Love Bombing, Breadcrumbing, DARVO, Triangulation, Future Fakin
     document.getElementById('psResult').classList.add('visible');
     setTimeout(()=>document.getElementById('psResult').scrollIntoView({behavior:'smooth',block:'start'}),100);
     if (r.verdict==='danger') confetti({particleCount:70,spread:55,origin:{y:.6},colors:['#C8445C','#E8728A','#F7C5CE']});
-  } catch(err) { showToast('Connection issue — try again'); }
+  } catch(err) { showToast('Couldn\'t reach the AI — ' + err.message, 3500); }
   finally { btn.disabled=false; btn.innerHTML='Analyze Him →'; }
 }
 
@@ -1412,12 +1449,7 @@ async function runGoodGuyAI() {
 Respond ONLY with valid JSON, no markdown:
 {"verdict":"One warm but honest sentence about what her description reveals.","greenFlags":["Green flag 1","Green flag 2","Green flag 3"],"watchPoints":["Watch point 1","Watch point 2"],"responses":[{"label":"How to show up","text":"Specific, natural words or approach — not generic advice"},{"label":"How to build on this","text":"What she can do to deepen this healthy dynamic"},{"label":"What to watch for","text":"What would indicate this is still solid going forward"}],"bottomLine":"One empowering final sentence about her and this relationship."}`;
   try {
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
-      method:'POST', headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:800,system:sys,messages:[{role:'user',content:input}]})
-    });
-    const data = await res.json();
-    const r = JSON.parse((data.content||[]).filter(b=>b.type==='text').map(b=>b.text).join('').replace(/```json|```/g,'').trim());
+    const r = await askGirlTalk(sys, input, 800);
     document.getElementById('ggVerdict').textContent = r.verdict||'';
     document.getElementById('ggGreenFlags').innerHTML = (r.greenFlags||[]).map(f=>`<div style="font-size:12.5px;color:var(--green);margin-bottom:4px;line-height:1.4;">✅ ${esc(f)}</div>`).join('');
     document.getElementById('ggWatchPoints').innerHTML = (r.watchPoints||[]).map(w=>`<div style="font-size:12.5px;color:var(--amber);margin-bottom:4px;line-height:1.4;">👀 ${esc(w)}</div>`).join('');
@@ -1426,7 +1458,7 @@ Respond ONLY with valid JSON, no markdown:
     document.getElementById('ggResult').classList.add('visible');
     setTimeout(()=>document.getElementById('ggResult').scrollIntoView({behavior:'smooth',block:'start'}),100);
     confetti({particleCount:100,spread:70,origin:{y:.6},colors:['#2E7D32','#66A36C','#A5D6A7','#FFFFFF']});
-  } catch(err) { showToast('Connection issue — try again'); }
+  } catch(err) { showToast('Couldn\'t reach the AI — ' + err.message, 3500); }
   finally { btn.disabled=false; btn.innerHTML='Scan for Good Guy Energy →'; }
 }
 
@@ -1475,12 +1507,7 @@ Respond ONLY with valid JSON, no markdown:
 {"verdict":"likely-gay"|"possibly-bi"|"straight-unavailable"|"unclear","verdictEmoji":"🌈"|"💜"|"💙"|"🤔","verdictLabel":"Short label","verdictText":"One specific honest sentence about what her description most suggests.","signals":["Specific signal from what she described 1","Specific signal 2","Specific signal 3"],"alternatives":["Alternative explanation 1","Alternative explanation 2"],"moves":[{"label":"Approach A — name","text":"Real, specific words she can use to get clarity naturally"},{"label":"Approach B — name","text":"Different approach"},{"label":"Approach C — name","text":"If she decides to be direct"}],"bottomLine":"One honest, warm final sentence about whatever the outcome."}
 Important: Base everything on what she specifically described. Never rely on stereotypes. Always offer multiple explanations.`;
   try {
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
-      method:'POST', headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:800,system:sys,messages:[{role:'user',content:input}]})
-    });
-    const data = await res.json();
-    const r = JSON.parse((data.content||[]).filter(b=>b.type==='text').map(b=>b.text).join('').replace(/```json|```/g,'').trim());
+    const r = await askGirlTalk(sys, input, 800);
     const bannerClasses = {'likely-gay':'gaydar-high','possibly-bi':'gaydar-high','straight-unavailable':'gaydar-low','unclear':'gaydar-mid'};
     const banner = document.getElementById('gdBanner');
     banner.className = bannerClasses[r.verdict]||'gaydar-mid';
@@ -1494,7 +1521,7 @@ Important: Base everything on what she specifically described. Never rely on ste
     document.getElementById('gdResult').classList.add('visible');
     setTimeout(()=>document.getElementById('gdResult').scrollIntoView({behavior:'smooth',block:'start'}),100);
     if (r.verdict==='likely-gay'||r.verdict==='possibly-bi') confetti({particleCount:80,spread:60,origin:{y:.6},colors:['#9C27B0','#E040FB','#CE93D8','#FFFFFF']});
-  } catch(err) { showToast('Connection issue — try again'); }
+  } catch(err) { showToast('Couldn\'t reach the AI — ' + err.message, 3500); }
   finally { btn.disabled=false; btn.innerHTML='Activate Gaydar →'; }
 }
 
