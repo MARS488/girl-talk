@@ -1088,9 +1088,10 @@ let psScore = 0;
 // If neither is set, the AI tabs show a clear "not configured" message instead of
 // silently failing.
 const GT_CONFIG = {
-  proxyUrl: '',                 // e.g. '/api/decode'  — preferred
-  apiKey:   '',                 // e.g. 'sk-ant-...'   — dev only, exposes the key
-  model:    'claude-sonnet-4-6'
+  proxyUrl:    '/api/chat',     // server-side proxy (api/chat.js) — the safe default
+  proxySecret: '',              // optional: must match PROXY_SECRET env var on the proxy
+  apiKey:      '',              // dev only — exposes the key in the browser
+  model:       'claude-sonnet-4-6'
 };
 
 // Single entry point for every AI feature. Returns parsed JSON from Claude's reply.
@@ -1104,9 +1105,11 @@ async function askGirlTalk(system, userContent, maxTokens = 900) {
 
   let res;
   if (GT_CONFIG.proxyUrl) {
+    const headers = { 'Content-Type': 'application/json' };
+    if (GT_CONFIG.proxySecret) headers['x-proxy-secret'] = GT_CONFIG.proxySecret;
     res = await fetch(GT_CONFIG.proxyUrl, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers,
       body: JSON.stringify(body)
     });
   } else if (GT_CONFIG.apiKey) {
@@ -1124,7 +1127,14 @@ async function askGirlTalk(system, userContent, maxTokens = 900) {
     throw new Error('AI not configured — set GT_CONFIG.proxyUrl or GT_CONFIG.apiKey');
   }
 
-  if (!res.ok) throw new Error('API ' + res.status);
+  if (!res.ok) {
+    let msg = 'API ' + res.status;
+    try {
+      const e = await res.json();
+      if (e && e.error) msg = typeof e.error === 'string' ? e.error : (e.error.message || msg);
+    } catch (_) {}
+    throw new Error(msg);
+  }
   const data = await res.json();
   const raw = (data.content || []).filter(b => b.type === 'text').map(b => b.text).join('');
   return JSON.parse(raw.replace(/```json|```/g, '').trim());

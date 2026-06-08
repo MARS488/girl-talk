@@ -1,0 +1,7 @@
+{
+  "name": "girl-talk",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Girl Talk • Real Talk — relationship decoder (static page + AI proxy)"
+}
