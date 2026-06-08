@@ -388,6 +388,48 @@ footer{border-top:1px solid var(--border);padding:1.25rem 2rem;text-align:center
 
 <div class="toast" id="toast"></div>
 
+<!-- ══════════ SAFETY RESOURCES (always available) ══════════ -->
+<style>
+  #safetyFab{position:fixed;right:14px;bottom:14px;z-index:900;border:none;cursor:pointer;
+    background:var(--surface);color:var(--text);border:1px solid var(--border-md);
+    border-radius:999px;padding:9px 14px;font:600 13px/1 'Cabinet Grotesk',sans-serif;
+    box-shadow:var(--shadow);display:flex;align-items:center;gap:6px;transition:transform .15s,box-shadow .2s;}
+  #safetyFab:hover{transform:translateY(-1px);box-shadow:var(--shadow-lg);}
+  #safetyFab.pulse{animation:safetyPulse 1.1s ease-in-out 4;border-color:var(--rose);color:var(--rose);}
+  @keyframes safetyPulse{0%,100%{box-shadow:0 0 0 0 rgba(200,68,92,.35);}50%{box-shadow:0 0 0 8px rgba(200,68,92,0);}}
+  #safetyOverlay{position:fixed;inset:0;z-index:950;background:rgba(20,12,15,.45);
+    display:none;align-items:center;justify-content:center;padding:1rem;}
+  #safetyOverlay.open{display:flex;}
+  #safetyPanel{background:var(--surface);color:var(--text);max-width:420px;width:100%;
+    border:1px solid var(--border-md);border-radius:20px;padding:1.5rem 1.4rem;
+    box-shadow:var(--shadow-lg);position:relative;animation:fadeUp .25s ease both;max-height:90vh;overflow:auto;}
+  #safetyPanel h3{font-family:'Cormorant Garamond',serif;font-size:1.6rem;margin-bottom:.5rem;}
+  #safetyPanel p{font-size:13.5px;color:var(--text-mid);line-height:1.6;margin-bottom:.75rem;}
+  #safetyPanel ul{list-style:none;display:flex;flex-direction:column;gap:9px;margin:.5rem 0 .9rem;}
+  #safetyPanel li{font-size:13.5px;line-height:1.5;background:var(--surface2);border:1px solid var(--border);
+    border-radius:12px;padding:10px 12px;}
+  #safetyPanel a{color:var(--rose);font-weight:700;text-decoration:none;}
+  #safetyPanel a:hover{text-decoration:underline;}
+  #safetyPanel .safety-note{font-size:12px;color:var(--text-soft);margin-bottom:0;}
+  #safetyClose{position:absolute;top:12px;right:12px;border:none;background:var(--surface2);
+    color:var(--text-mid);width:30px;height:30px;border-radius:50%;cursor:pointer;font-size:14px;}
+</style>
+<button id="safetyFab" onclick="toggleSafety()" aria-label="Safety resources" title="Feeling unsafe? Get support">🛟 Get help</button>
+<div id="safetyOverlay" onclick="if(event.target===this)toggleSafety()">
+  <div id="safetyPanel" role="dialog" aria-modal="true" aria-label="Safety resources">
+    <button id="safetyClose" onclick="toggleSafety()" aria-label="Close">✕</button>
+    <h3>You deserve to feel safe 💗</h3>
+    <p>If someone is hurting, threatening, isolating, or controlling you, it is not your fault — and support is free and confidential.</p>
+    <ul>
+      <li><strong>US · Domestic violence:</strong> call <a href="tel:18007997233">1-800-799-7233</a>, or text <strong>START</strong> to <strong>88788</strong></li>
+      <li><strong>US · Crisis &amp; mental health:</strong> call or text <a href="tel:988">988</a></li>
+      <li><strong>Immediate danger:</strong> call your local emergency number (US/Canada <a href="tel:911">911</a>)</li>
+      <li><strong>Outside the US:</strong> find a local line at <a href="https://www.befrienders.org" target="_blank" rel="noopener">befrienders.org</a>, or search “domestic violence helpline” + your country</li>
+    </ul>
+    <p class="safety-note">You can reach out even if you're not sure yet — they can help you think it through and make a plan.</p>
+  </div>
+</div>
+
 <!-- ══════════ NAV ══════════ -->
 <nav>
   <div class="nav-left">
@@ -1071,73 +1113,41 @@ let activePill = '📱 He texted';
 let activeTone = 'brutal';
 let lastResult = null;
 let lastSituation = '';
-const communityPosts = [];
+const communityPosts = JSON.parse(localStorage.getItem('gt-community') || '[]');
+function saveCommunity() {
+  try { localStorage.setItem('gt-community', JSON.stringify(communityPosts.slice(0, 50))); } catch (_) {}
+}
 const psAnswered = {};
 let psScore = 0;
 
 // ─── AI CONFIG ───
-// The AI features call Claude. Pick ONE of two modes:
-//
-//   1. PROXY (recommended for production): point `proxyUrl` at your own backend
-//      endpoint that holds the API key server-side and forwards the request body
-//      to https://api.anthropic.com/v1/messages. The key never reaches the browser.
-//
-//   2. DIRECT (dev / demo only): drop your key in `apiKey`. This sends the key
-//      from the browser — anyone viewing the page can read it. Never ship this.
-//
-// If neither is set, the AI tabs show a clear "not configured" message instead of
-// silently failing.
+// The AI features call Claude through a server-side proxy (api/chat.js) that
+// holds the API key AND the prompts. The browser only sends a feature name and
+// the user's text — see README.md for deployment.
 const GT_CONFIG = {
-  proxyUrl:    '/api/chat',     // server-side proxy (api/chat.js) — the safe default
-  proxySecret: '',              // optional: must match PROXY_SECRET env var on the proxy
-  apiKey:      '',              // dev only — exposes the key in the browser
-  model:       'claude-sonnet-4-6'
+  proxyUrl:    '/api/chat',     // server-side proxy (api/chat.js)
+  proxySecret: ''               // optional: must match PROXY_SECRET on the proxy
 };
 
-// Single entry point for every AI feature. Returns parsed JSON from Claude's reply.
-async function askGirlTalk(system, userContent, maxTokens = 900) {
-  const body = {
-    model: GT_CONFIG.model,
-    max_tokens: maxTokens,
-    system,
-    messages: [{ role: 'user', content: userContent }]
-  };
+// Single entry point for every AI feature. Sends a feature + the user's text to
+// the proxy and returns the parsed result object Claude produced.
+async function askGirlTalk(feature, input, opts = {}) {
+  const headers = { 'Content-Type': 'application/json' };
+  if (GT_CONFIG.proxySecret) headers['x-proxy-secret'] = GT_CONFIG.proxySecret;
 
-  let res;
-  if (GT_CONFIG.proxyUrl) {
-    const headers = { 'Content-Type': 'application/json' };
-    if (GT_CONFIG.proxySecret) headers['x-proxy-secret'] = GT_CONFIG.proxySecret;
-    res = await fetch(GT_CONFIG.proxyUrl, {
-      method: 'POST',
-      headers,
-      body: JSON.stringify(body)
-    });
-  } else if (GT_CONFIG.apiKey) {
-    res = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-api-key': GT_CONFIG.apiKey,
-        'anthropic-version': '2023-06-01',
-        'anthropic-dangerous-direct-browser-access': 'true'
-      },
-      body: JSON.stringify(body)
-    });
-  } else {
-    throw new Error('AI not configured — set GT_CONFIG.proxyUrl or GT_CONFIG.apiKey');
-  }
+  const res = await fetch(GT_CONFIG.proxyUrl, {
+    method: 'POST',
+    headers,
+    body: JSON.stringify({ feature, input, ...opts })
+  });
 
   if (!res.ok) {
-    let msg = 'API ' + res.status;
-    try {
-      const e = await res.json();
-      if (e && e.error) msg = typeof e.error === 'string' ? e.error : (e.error.message || msg);
-    } catch (_) {}
+    let msg = 'Something went wrong (' + res.status + ')';
+    try { const e = await res.json(); if (e && e.error) msg = e.error; } catch (_) {}
     throw new Error(msg);
   }
   const data = await res.json();
-  const raw = (data.content || []).filter(b => b.type === 'text').map(b => b.text).join('');
-  return JSON.parse(raw.replace(/```json|```/g, '').trim());
+  return data.result;
 }
 
 // ─── THEME ───
@@ -1159,6 +1169,20 @@ function showToast(msg, d) {
   const t = document.getElementById('toast');
   t.textContent = msg; t.classList.add('show');
   setTimeout(() => t.classList.remove('show'), d || 2800);
+}
+
+// ─── SAFETY ───
+function toggleSafety() {
+  const o = document.getElementById('safetyOverlay');
+  o.classList.toggle('open');
+  document.getElementById('safetyFab').classList.remove('pulse');
+}
+// Called when an AI verdict suggests the user may be unsafe — gently surfaces help.
+function flagDanger(verdict) {
+  if (verdict !== 'danger') return;
+  const fab = document.getElementById('safetyFab');
+  fab.classList.remove('pulse'); void fab.offsetWidth; fab.classList.add('pulse');
+  showToast('If you feel unsafe, tap 🛟 Get help for support.', 5000);
 }
 
 // ─── NAV TABS ───
@@ -1209,12 +1233,6 @@ function resetDecode() {
   document.getElementById('inputCard').scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
-const toneInstr = {
-  brutal:   "Be direct, confident, slightly savage. Zero sugarcoating. Lead with truth. Use 'Girl…', 'Real talk —', 'Let's be honest.'",
-  balanced: "Be honest and clear but fair. Give benefit of doubt where evidence genuinely supports it. No sugarcoating but not savage.",
-  gentle:   "Lead with warmth and empathy before the truth. Acknowledge her feelings first. Like a caring older sister."
-};
-
 async function decodeWithAI() {
   const input = document.getElementById('situationInput').value.trim();
   if (!input) {
@@ -1227,14 +1245,8 @@ async function decodeWithAI() {
   btn.innerHTML = 'Reading him <span class="dots"><span></span><span></span><span></span></span>';
   lastSituation = input; lastResult = null;
 
-  const sys = `You are Girl Talk — a brutally honest, sharp, empowering relationship decoder for women. A protective big sister who cuts through confusion and tells the truth.
-${toneInstr[activeTone]}
-Respond with ONLY valid JSON. No preamble. No markdown. No code fences:
-{"decode":"2-4 sentences. Start with 'Girl…' or 'Real talk —'. Specific to what she described.","probs":[{"label":"🔴 Short scenario","pct":number,"color":"red"},{"label":"🟡 Short scenario","pct":number,"color":"amber"},{"label":"🟢 Short scenario","pct":number,"color":"green"}],"flags":["Flag name"],"flagText":"1-2 sentences on pattern. Empty string if no real flags.","options":[{"label":"Option A — The Unbothered Queen","text":"exact words"},{"label":"Option B — The Direct Ask","text":"exact words"},{"label":"Option C — The Mic Drop","text":"exact words"},{"label":"Option D — The Silence","text":"reasoning for silence"}],"bottomLine":"One punchy final sentence. Her power. No quotes."}
-Rules: probs sum to 100. flags=[] if none. Be SPECIFIC to her situation.`;
-
   try {
-    const r = await askGirlTalk(sys, `Situation: ${activePill}\n\n${input}`, 1000);
+    const r = await askGirlTalk('decode', input, { tone: activeTone, pill: activePill });
     lastResult = r; renderDecodeOutput(r);
   } catch(err) {
     document.getElementById('decodeText').textContent = "Couldn't decode — " + err.message;
@@ -1289,12 +1301,12 @@ function renderCommunity() {
 function likePost(i) {
   if (communityPosts[i].liked) return;
   communityPosts[i].liked = true; communityPosts[i].likes++;
-  renderCommunity();
+  saveCommunity(); renderCommunity();
 }
 function shareToCommunity() {
   if (!lastResult||!lastSituation) { showToast('Decode something first!'); return; }
   communityPosts.unshift({situation:lastSituation,decode:lastResult.decode||'',pill:activePill,tone:activeTone,likes:0,liked:false,time:'Just now'});
-  renderCommunity();
+  saveCommunity(); renderCommunity();
   confetti({particleCount:90,spread:70,origin:{y:.6},colors:['#C8445C','#E8728A','#F7C5CE','#FFFFFF','#9B2A41']});
   showToast('✨ Shared to the community!');
   switchTab('community', document.querySelectorAll('.nav-tab')[1]);
@@ -1306,11 +1318,9 @@ async function analyzeRedFlags() {
   if (!input) return;
   const btn = document.getElementById('rfBtn');
   btn.disabled = true; btn.innerHTML = 'Checking <span class="dots"><span></span><span></span><span></span></span>';
-  const sys = `You are Girl Talk's Red Flag Checker — sharp, honest, research-backed. Identify relationship red flags in what she describes.
-Respond with ONLY valid JSON, no markdown:
-{"verdict":"clear"|"caution"|"danger","verdictEmoji":"✅"|"⚠️"|"🚨","verdictText":"One specific sentence about this situation.","flags":["Flag name 1","Flag name 2"],"patternType":"One sentence on what type of pattern this is.","projection":"One sentence on where this typically goes if unchanged.","whatSheShould":"One key insight she needs to understand.","moves":[{"label":"Option A — name","text":"exact words"},{"label":"Option B — name","text":"exact words"},{"label":"Option C — name","text":"exact words"}],"bottomLine":"One powerful final sentence."}`;
   try {
-    const r = await askGirlTalk(sys, input, 900);
+    const r = await askGirlTalk('redflags', input);
+    flagDanger(r.verdict);
     const banner = document.getElementById('rfBanner');
     banner.className = 'verdict-banner ' + (r.verdict||'caution');
     document.getElementById('rfEmoji').textContent = r.verdictEmoji||'⚠️';
@@ -1426,12 +1436,9 @@ async function analyzePlayer() {
   if (!input) return;
   const btn = document.getElementById('psBtn');
   btn.disabled=true; btn.innerHTML='Analyzing <span class="dots"><span></span><span></span><span></span></span>';
-  const sys = `You are Girl Talk's Player Stopper AI — sharp, honest relationship defense for women. Identify player tactics and give actionable responses.
-Respond ONLY with valid JSON, no markdown:
-{"verdict":"clear"|"caution"|"danger","verdictEmoji":"✅"|"⚠️"|"🚨","verdictText":"One specific sentence.","tactics":["Tactic 1","Tactic 2"],"riskLevel":"One sentence.","whatHeWants":"Blunt sentence on what his behavior suggests he wants.","whatSheShould":"One key insight.","moves":[{"label":"Option A — name","text":"real natural words"},{"label":"Option B — name","text":"different energy"},{"label":"Option C — name","text":"bold option"}],"bottomLine":"One powerful final line."}
-Tactics to name: Love Bombing, Breadcrumbing, DARVO, Triangulation, Future Faking, Orbiting, Soft Ghosting, Negging, Intermittent Reinforcement, Situationship Lock-In, Strategic Unavailability, Mirroring.`;
   try {
-    const r = await askGirlTalk(sys, input, 900);
+    const r = await askGirlTalk('player', input);
+    flagDanger(r.verdict);
     document.getElementById('psBanner').className = 'verdict-banner '+(r.verdict||'caution');
     document.getElementById('psEmoji').textContent = r.verdictEmoji||'⚠️';
     document.getElementById('psLabel').textContent = {clear:'🟢 Looks Okay',caution:'⚠️ Watch Closely',danger:'🚨 Player Alert'}[r.verdict]||'⚠️';
@@ -1455,11 +1462,8 @@ async function runGoodGuyAI() {
   if (!input) return;
   const btn = document.getElementById('ggBtn');
   btn.disabled=true; btn.innerHTML='Scanning <span class="dots"><span></span><span></span><span></span></span>';
-  const sys = `You are Girl Talk's Good Guy Detector — warm, honest, empowering. You help women recognize healthy relationship behavior and respond in ways that keep things good.
-Respond ONLY with valid JSON, no markdown:
-{"verdict":"One warm but honest sentence about what her description reveals.","greenFlags":["Green flag 1","Green flag 2","Green flag 3"],"watchPoints":["Watch point 1","Watch point 2"],"responses":[{"label":"How to show up","text":"Specific, natural words or approach — not generic advice"},{"label":"How to build on this","text":"What she can do to deepen this healthy dynamic"},{"label":"What to watch for","text":"What would indicate this is still solid going forward"}],"bottomLine":"One empowering final sentence about her and this relationship."}`;
   try {
-    const r = await askGirlTalk(sys, input, 800);
+    const r = await askGirlTalk('goodguy', input);
     document.getElementById('ggVerdict').textContent = r.verdict||'';
     document.getElementById('ggGreenFlags').innerHTML = (r.greenFlags||[]).map(f=>`<div style="font-size:12.5px;color:var(--green);margin-bottom:4px;line-height:1.4;">✅ ${esc(f)}</div>`).join('');
     document.getElementById('ggWatchPoints').innerHTML = (r.watchPoints||[]).map(w=>`<div style="font-size:12.5px;color:var(--amber);margin-bottom:4px;line-height:1.4;">👀 ${esc(w)}</div>`).join('');
@@ -1512,12 +1516,8 @@ async function runGaydarAI() {
   if (!input) return;
   const btn = document.getElementById('gdBtn');
   btn.disabled=true; btn.innerHTML='Reading the signals <span class="dots"><span></span><span></span><span></span></span>';
-  const sys = `You are Girl Talk's Gaydar AI — thoughtful, non-stereotyping, genuinely helpful. You help women understand confusing signals. You are NOT using stereotypes — you're analyzing specific behavioral patterns she described.
-Respond ONLY with valid JSON, no markdown:
-{"verdict":"likely-gay"|"possibly-bi"|"straight-unavailable"|"unclear","verdictEmoji":"🌈"|"💜"|"💙"|"🤔","verdictLabel":"Short label","verdictText":"One specific honest sentence about what her description most suggests.","signals":["Specific signal from what she described 1","Specific signal 2","Specific signal 3"],"alternatives":["Alternative explanation 1","Alternative explanation 2"],"moves":[{"label":"Approach A — name","text":"Real, specific words she can use to get clarity naturally"},{"label":"Approach B — name","text":"Different approach"},{"label":"Approach C — name","text":"If she decides to be direct"}],"bottomLine":"One honest, warm final sentence about whatever the outcome."}
-Important: Base everything on what she specifically described. Never rely on stereotypes. Always offer multiple explanations.`;
   try {
-    const r = await askGirlTalk(sys, input, 800);
+    const r = await askGirlTalk('gaydar', input);
     const bannerClasses = {'likely-gay':'gaydar-high','possibly-bi':'gaydar-high','straight-unavailable':'gaydar-low','unclear':'gaydar-mid'};
     const banner = document.getElementById('gdBanner');
     banner.className = bannerClasses[r.verdict]||'gaydar-mid';
