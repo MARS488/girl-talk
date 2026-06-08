@@ -1,0 +1,1609 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Girl Talk • Real Talk (Demo)</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&family=Cabinet+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+
+<style>
+/* ══ TOKENS ══ */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --rose:#C8445C;--rose-deep:#9B2A41;--rose-mid:#E8728A;--rose-light:#F7C5CE;
+  --blush:#FDF0F3;--blush-deep:#F9DDE4;--cream:#FDFAF8;
+  --surface:#FFFFFF;--surface2:#FBF6F7;
+  --text:#18100E;--text-mid:#6B4A52;--text-soft:#A07888;--text-faint:#C9A8B2;
+  --border:rgba(200,68,92,0.12);--border-md:rgba(200,68,92,0.22);--border-str:rgba(200,68,92,0.38);
+  --red:#D93F3F;--amber:#C07A1A;--green:#2E7D32;--green-l:#66A36C;
+  --purple:#6A1B9A;--purple-l:#9C27B0;
+  --shadow:0 4px 24px rgba(200,68,92,0.08);--shadow-lg:0 12px 48px rgba(200,68,92,0.14);
+  --radius:24px;
+}
+[data-theme="dark"]{
+  --cream:#140C0F;--surface:#1E1318;--surface2:#261A1E;
+  --blush:#2E1C22;--blush-deep:#391F28;
+  --text:#F4ECF0;--text-mid:#C09AA8;--text-soft:#8A6070;--text-faint:#5A3C48;
+  --border:rgba(200,68,92,0.15);--border-md:rgba(200,68,92,0.25);--border-str:rgba(200,68,92,0.42);
+  --shadow:0 4px 24px rgba(0,0,0,0.3);
+}
+html{scroll-behavior:smooth;}
+body{font-family:'Cabinet Grotesk',sans-serif;background:var(--cream);color:var(--text);min-height:100vh;transition:background .3s,color .3s;}
+
+/* ══ NAV ══ */
+nav{
+  position:sticky;top:0;z-index:500;
+  background:rgba(253,250,248,.92);backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--border);
+  padding:0 1.5rem;height:62px;
+  display:flex;align-items:center;justify-content:space-between;
+  transition:background .3s;
+}
+[data-theme="dark"] nav{background:rgba(20,12,15,.92);}
+.nav-left{display:flex;align-items:center;gap:12px;}
+.nav-logo{
+  width:36px;height:36px;
+  background:linear-gradient(135deg,var(--rose),var(--rose-deep));
+  border-radius:12px;display:flex;align-items:center;justify-content:center;
+  font-size:18px;box-shadow:0 2px 12px rgba(200,68,92,.35);
+}
+.nav-name{font-family:'Cormorant Garamond',serif;font-size:21px;font-weight:700;color:var(--text);}
+.nav-right{display:flex;align-items:center;gap:4px;flex-wrap:wrap;}
+.nav-tab{
+  font-family:'Cabinet Grotesk',sans-serif;font-size:12.5px;font-weight:600;
+  color:var(--text-mid);background:none;border:1px solid transparent;
+  padding:5px 13px;border-radius:99px;cursor:pointer;transition:all .18s;white-space:nowrap;
+}
+.nav-tab:hover{color:var(--rose);background:var(--blush);}
+.nav-tab.active{color:var(--rose-deep);background:var(--blush);border-color:var(--border-md);}
+.theme-btn{
+  width:32px;height:32px;border-radius:50%;border:1px solid var(--border-md);
+  background:var(--surface);display:flex;align-items:center;justify-content:center;
+  font-size:15px;cursor:pointer;transition:all .18s;margin-left:4px;
+}
+.theme-btn:hover{background:var(--blush);}
+
+/* ══ TABS ══ */
+.tab-panel{display:none;}
+.tab-panel.active{display:block;animation:fadeUp .42s ease both;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+
+/* ══ SHARED CARD ══ */
+.card{
+  background:var(--surface);border:1px solid var(--border-md);border-radius:var(--radius);
+  padding:2rem;max-width:720px;margin:0 auto 1.25rem;
+  box-shadow:var(--shadow);transition:background .3s,border-color .3s;
+}
+.section-label{
+  display:flex;align-items:center;gap:8px;
+  font-size:10px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--rose);margin-bottom:1rem;
+}
+.section-label::after{content:'';flex:1;height:1px;background:var(--border-md);}
+.section-title{font-family:'Cormorant Garamond',serif;font-size:1.55rem;font-weight:700;margin-bottom:.4rem;}
+.section-desc{font-size:14px;color:var(--text-mid);line-height:1.7;margin-bottom:1.25rem;}
+
+/* ══ HERO ══ */
+.hero{padding:4rem 1.5rem 2rem;text-align:center;max-width:680px;margin:0 auto;}
+.hero-badge{
+  display:inline-flex;align-items:center;gap:6px;
+  background:var(--blush);border:1px solid var(--border-str);
+  color:var(--rose-deep);font-size:11px;font-weight:800;
+  padding:5px 14px;border-radius:99px;letter-spacing:.08em;text-transform:uppercase;margin-bottom:1.5rem;
+}
+.hero h1{font-family:'Cormorant Garamond',serif;font-size:clamp(2.4rem,6vw,4rem);font-weight:700;line-height:1.1;letter-spacing:-.025em;margin-bottom:1rem;}
+.hero h1 em{font-style:italic;color:var(--rose);}
+.hero-sub{font-size:15.5px;line-height:1.75;color:var(--text-mid);max-width:460px;margin:0 auto 2rem;}
+
+/* ══ DECODE INPUT ══ */
+.pills{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:1.25rem;}
+.pill{
+  padding:5px 14px;border-radius:99px;border:1px solid var(--border-md);
+  background:transparent;color:var(--text-mid);font-size:12.5px;font-weight:500;
+  font-family:'Cabinet Grotesk',sans-serif;cursor:pointer;transition:all .16s;
+}
+.pill:hover{background:var(--blush);border-color:var(--rose-mid);color:var(--rose-deep);}
+.pill.active{background:var(--blush-deep);border-color:var(--rose);color:var(--rose-deep);font-weight:700;}
+.input-wrap{position:relative;}
+textarea{
+  width:100%;min-height:100px;
+  font-family:'Cabinet Grotesk',sans-serif;font-size:15px;
+  color:var(--text);background:var(--surface2);
+  border:1px solid var(--border-md);border-radius:14px;
+  padding:14px 16px;resize:vertical;line-height:1.65;transition:border-color .18s,background .3s;
+}
+textarea:focus{outline:none;border-color:var(--rose);}
+textarea::placeholder{color:var(--text-faint);font-style:italic;}
+.char-count{position:absolute;bottom:10px;right:12px;font-size:11px;color:var(--text-faint);pointer-events:none;}
+.card-footer{display:flex;align-items:center;justify-content:space-between;margin-top:1rem;gap:12px;flex-wrap:wrap;}
+.tone-group{flex-shrink:0;}
+.tone-label{font-size:10px;color:var(--text-faint);font-weight:800;letter-spacing:.08em;text-transform:uppercase;margin-bottom:5px;}
+.tone-row{display:flex;gap:5px;}
+.tone-btn{
+  font-size:12px;font-family:'Cabinet Grotesk',sans-serif;font-weight:600;
+  padding:5px 13px;border-radius:99px;border:1px solid var(--border-md);
+  background:transparent;color:var(--text-mid);cursor:pointer;transition:all .16s;
+}
+.tone-btn:hover{background:var(--blush);}
+.tone-btn.active{background:var(--rose);border-color:var(--rose);color:white;font-weight:700;}
+.main-btn{
+  background:linear-gradient(135deg,var(--rose),var(--rose-deep));color:white;border:none;
+  padding:12px 26px;border-radius:99px;font-family:'Cabinet Grotesk',sans-serif;
+  font-size:14.5px;font-weight:700;display:flex;align-items:center;gap:8px;
+  box-shadow:0 4px 18px rgba(200,68,92,.35);cursor:pointer;
+  transition:transform .15s,box-shadow .15s,opacity .15s;white-space:nowrap;
+}
+.main-btn:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 8px 28px rgba(200,68,92,.44);}
+.main-btn:disabled{opacity:.6;cursor:default;}
+.main-btn.green-btn{background:linear-gradient(135deg,var(--green),#1B5E20);box-shadow:0 4px 18px rgba(46,125,50,.35);}
+.main-btn.green-btn:hover:not(:disabled){box-shadow:0 8px 28px rgba(46,125,50,.44);}
+.main-btn.purple-btn{background:linear-gradient(135deg,var(--purple),#4A148C);box-shadow:0 4px 18px rgba(106,27,154,.35);}
+.main-btn.purple-btn:hover:not(:disabled){box-shadow:0 8px 28px rgba(106,27,154,.44);}
+.main-btn.wide{width:100%;justify-content:center;margin-top:.75rem;}
+.dots{display:inline-flex;gap:3px;align-items:center;}
+.dots span{width:5px;height:5px;background:rgba(255,255,255,.9);border-radius:50%;animation:dotBounce 1.1s infinite ease-in-out;}
+.dots span:nth-child(2){animation-delay:.18s;}
+.dots span:nth-child(3){animation-delay:.36s;}
+@keyframes dotBounce{0%,80%,100%{transform:scale(.6);opacity:.4}40%{transform:scale(1);opacity:1}}
+
+/* ══ DECODE OUTPUT ══ */
+.output{max-width:720px;margin:0 auto 2rem;display:none;}
+.output.visible{display:block;animation:fadeUp .45s ease both;}
+.out-section{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:1.5rem 1.75rem;margin-bottom:10px;box-shadow:var(--shadow);transition:background .3s;}
+.out-tag{font-size:10px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--rose);margin-bottom:10px;}
+.decode-text{font-size:15.5px;line-height:1.75;color:var(--text);}
+.prob-row{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+.prob-label{font-size:13px;color:var(--text-mid);flex:1;line-height:1.3;}
+.prob-pct{font-size:13px;font-weight:700;color:var(--text);width:38px;text-align:right;}
+.prob-track{width:100px;height:7px;background:var(--blush);border-radius:99px;overflow:hidden;flex-shrink:0;}
+.prob-fill{height:100%;border-radius:99px;}
+.flag-chip{display:inline-flex;align-items:center;gap:4px;background:#FAEBEB;border:1px solid #EDAAB0;color:#7A2030;font-size:12px;font-weight:700;padding:3px 12px;border-radius:99px;margin:3px;}
+[data-theme="dark"] .flag-chip{background:#2E1215;border-color:#7A3040;color:#F0A0B0;}
+.option-card{padding:12px 16px;border-left:3px solid var(--rose);background:var(--blush);border-radius:0 13px 13px 0;margin-bottom:8px;}
+.option-tag{font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--rose);margin-bottom:4px;}
+.option-text{font-size:13.5px;color:var(--text-mid);line-height:1.6;font-style:italic;}
+.bottom-line{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:19px;color:var(--rose-deep);line-height:1.5;padding:1.4rem 1.6rem;background:var(--blush);border-radius:14px;border-left:4px solid var(--rose);box-shadow:var(--shadow);margin-bottom:10px;transition:background .3s;}
+.action-row{display:flex;gap:9px;flex-wrap:wrap;}
+.act-btn{
+  display:inline-flex;align-items:center;gap:6px;padding:8px 18px;border-radius:99px;
+  font-size:13px;font-family:'Cabinet Grotesk',sans-serif;font-weight:600;
+  cursor:pointer;transition:all .16s;border:1px solid var(--border-md);
+}
+.act-btn-primary{background:var(--rose);color:white;border-color:var(--rose);}
+.act-btn-primary:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(200,68,92,.4);}
+.act-btn-ghost{background:var(--surface);color:var(--text-mid);}
+.act-btn-ghost:hover{background:var(--blush);border-color:var(--border-str);}
+
+/* ══ COMMUNITY ══ */
+.community-wrap{max-width:720px;margin:2rem auto 3rem;padding:0 1rem;}
+.community-header{text-align:center;margin-bottom:2rem;}
+.community-header h2{font-family:'Cormorant Garamond',serif;font-size:clamp(1.8rem,4vw,2.6rem);font-weight:700;margin-bottom:.4rem;}
+.community-header p{font-size:14px;color:var(--text-mid);}
+.post{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:1.4rem 1.6rem;margin-bottom:10px;box-shadow:var(--shadow);transition:border-color .18s,transform .18s,background .3s;}
+.post:hover{border-color:var(--border-str);transform:translateY(-2px);}
+.post.post-new{animation:slideIn .4s cubic-bezier(.22,.68,0,1.2) both;}
+@keyframes slideIn{from{opacity:0;transform:translateY(-10px) scale(.98)}to{opacity:1;transform:translateY(0) scale(1)}}
+.post-sit{font-size:13.5px;color:var(--text-mid);line-height:1.65;border-left:3px solid var(--rose-light);padding-left:12px;margin-bottom:10px;font-style:italic;}
+.post-verdict{font-size:14px;line-height:1.7;color:var(--text);margin-bottom:12px;}
+.post-footer{display:flex;align-items:center;gap:7px;flex-wrap:wrap;}
+.post-tag{font-size:10.5px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--rose);background:var(--blush);padding:3px 10px;border-radius:99px;}
+.post-time{font-size:11px;color:var(--text-faint);margin-left:auto;}
+.post-heart{display:flex;align-items:center;gap:4px;font-size:12px;color:var(--text-soft);background:none;border:none;font-family:'Cabinet Grotesk',sans-serif;cursor:pointer;transition:color .15s;}
+.post-heart:hover,.post-heart.liked{color:var(--rose);}
+.empty-state{text-align:center;padding:4rem 2rem;color:var(--text-faint);}
+.empty-state .emoji{font-size:2.8rem;margin-bottom:.75rem;}
+.empty-state p{font-size:14.5px;line-height:1.65;}
+
+/* ══ SUB-NAV (shared for RF + Player Stopper) ══ */
+.sub-nav{display:flex;gap:6px;padding:0 0 1rem;max-width:760px;margin:0 auto;flex-wrap:wrap;}
+.sub-tab{padding:6px 15px;border-radius:99px;border:1px solid var(--border-md);background:transparent;font-family:'Cabinet Grotesk',sans-serif;font-size:12.5px;font-weight:600;color:var(--text-mid);cursor:pointer;transition:all .16s;}
+.sub-tab.active{background:var(--rose);color:white;border-color:var(--rose);}
+.sub-tab:hover:not(.active){background:var(--blush);color:var(--rose-deep);}
+.section-panel{display:none;}
+.section-panel.active{display:block;animation:fadeUp .38s ease both;}
+
+/* ══ RED FLAGS ══ */
+.rf-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:1rem;}
+.rf-item{background:var(--surface2);border:1px solid var(--border);border-radius:16px;padding:1.1rem;transition:border-color .18s;}
+.rf-item:hover{border-color:var(--border-str);}
+.rf-header{display:flex;align-items:flex-start;gap:10px;margin-bottom:8px;}
+.rf-icon{font-size:1.4rem;flex-shrink:0;}
+.rf-name{font-size:13.5px;font-weight:800;color:var(--text);margin-bottom:4px;}
+.rf-body{font-size:12.5px;color:var(--text-mid);line-height:1.6;}
+.rf-body strong{color:var(--text);}
+.sev{font-size:10px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;padding:2px 8px;border-radius:99px;white-space:nowrap;}
+.sev-high{background:#FAEBEB;color:#7A2030;border:1px solid #EDAAB0;}
+.sev-med{background:#FEF3E2;color:#7A4A10;border:1px solid #F0C872;}
+.sev-low{background:#EAF5ED;color:#2A5A34;border:1px solid #8FC9A0;}
+[data-theme="dark"] .sev-high{background:#2E1215;color:#F0A0B0;border-color:#7A3040;}
+[data-theme="dark"] .sev-med{background:#2E2010;color:#F0C080;border-color:#805020;}
+[data-theme="dark"] .sev-low{background:#102010;color:#80C090;border-color:#305030;}
+
+/* gottman horsemen */
+.horsemen-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:1.25rem;}
+.horseman-card{border-radius:18px;padding:1.4rem;border:1px solid var(--border-md);}
+.horseman-card.h-red{background:linear-gradient(135deg,#FFF0F0,#FFE8E8);}
+.horseman-card.h-darkred{background:linear-gradient(135deg,#FFE8E8,#FFD0D0);}
+.horseman-card.h-amber{background:linear-gradient(135deg,#FFFBF0,#FFF3D0);}
+.horseman-card.h-gray{background:linear-gradient(135deg,#F5F5F5,#EBEBEB);}
+[data-theme="dark"] .horseman-card.h-red{background:linear-gradient(135deg,#2E1215,#3A1820);}
+[data-theme="dark"] .horseman-card.h-darkred{background:linear-gradient(135deg,#3A1215,#481820);}
+[data-theme="dark"] .horseman-card.h-amber{background:linear-gradient(135deg,#2E2010,#3A2A10);}
+[data-theme="dark"] .horseman-card.h-gray{background:linear-gradient(135deg,#1E1820,#261E22);}
+.horseman-num{font-size:11px;font-weight:800;letter-spacing:.1em;color:var(--text-faint);margin-bottom:4px;}
+.horseman-name{font-family:'Cormorant Garamond',serif;font-size:1.35rem;font-weight:700;color:var(--text);margin-bottom:8px;}
+.horseman-def{font-size:12.5px;color:var(--text-mid);line-height:1.6;margin-bottom:10px;}
+.horseman-example{font-size:11.5px;color:var(--text-soft);line-height:1.55;margin-bottom:10px;font-style:italic;}
+.horseman-antidote{font-size:12px;font-weight:700;color:var(--green);background:#EAF5ED;border:1px solid #8FC9A0;padding:7px 12px;border-radius:10px;}
+[data-theme="dark"] .horseman-antidote{background:#102010;border-color:#305030;color:#80C090;}
+
+/* attachment tabs */
+.att-tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:1.25rem;}
+.att-tab{padding:6px 15px;border-radius:99px;border:1px solid var(--border-md);background:transparent;font-family:'Cabinet Grotesk',sans-serif;font-size:12.5px;font-weight:600;color:var(--text-mid);cursor:pointer;transition:all .16s;}
+.att-tab.active{background:var(--rose-deep);color:white;border-color:var(--rose-deep);}
+.att-tab:hover:not(.active){background:var(--blush);}
+.att-panel{display:none;}
+.att-panel.active{display:block;animation:fadeUp .35s ease both;}
+
+/* ══ PLAYER STOPPER ══ */
+.score-meter{background:var(--blush);border-radius:99px;height:14px;overflow:hidden;margin-bottom:.4rem;}
+.score-fill{height:100%;border-radius:99px;background:linear-gradient(90deg,var(--green),var(--amber),var(--red));transition:width .5s cubic-bezier(.22,.68,0,1.2);width:0%;}
+.score-labels{display:flex;justify-content:space-between;font-size:11px;color:var(--text-faint);margin-bottom:.75rem;}
+.score-verdict{text-align:center;font-size:14.5px;font-weight:700;color:var(--text-mid);min-height:1.4rem;margin-bottom:1rem;transition:color .3s;}
+.flag-list{list-style:none;display:flex;flex-direction:column;gap:7px;}
+.flag-item{display:flex;align-items:flex-start;gap:10px;padding:12px 14px;background:var(--surface2);border:1px solid var(--border);border-radius:14px;cursor:pointer;transition:all .18s;user-select:none;}
+.flag-item:hover{border-color:var(--border-str);background:var(--blush);}
+.flag-item.checked{background:var(--blush-deep);border-color:var(--rose);}
+.flag-item.checked .fcheck{background:var(--rose);border-color:var(--rose);}
+.flag-item.checked .fcheck::after{opacity:1;}
+.fcheck{width:20px;height:20px;border-radius:6px;border:2px solid var(--border-str);background:transparent;flex-shrink:0;margin-top:1px;position:relative;transition:all .18s;}
+.fcheck::after{content:'✓';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);color:white;font-size:12px;font-weight:800;opacity:0;transition:opacity .15s;}
+.flag-content{flex:1;}
+.flag-name{font-size:14px;font-weight:700;color:var(--text);margin-bottom:2px;}
+.flag-desc{font-size:12px;color:var(--text-soft);line-height:1.5;}
+
+/* tactics */
+.tactics-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:10px;}
+.tactic-card{background:var(--surface2);border:1px solid var(--border-md);border-radius:16px;padding:1.1rem;cursor:pointer;transition:all .18s;text-align:left;}
+.tactic-card:hover{border-color:var(--rose);background:var(--blush);transform:translateY(-2px);}
+.tactic-card.open{border-color:var(--rose);background:var(--blush-deep);}
+.tactic-icon{font-size:1.6rem;margin-bottom:6px;}
+.tactic-name{font-size:13px;font-weight:800;color:var(--text);margin-bottom:3px;}
+.tactic-preview{font-size:11.5px;color:var(--text-soft);line-height:1.45;}
+.tactic-detail{display:none;margin-top:8px;padding-top:8px;border-top:1px solid var(--border-md);}
+.tactic-card.open .tactic-detail{display:block;}
+.tactic-detail p{font-size:12px;color:var(--text-mid);line-height:1.6;margin-bottom:6px;}
+.tactic-counter{font-size:11.5px;font-weight:700;color:var(--rose);background:var(--blush);padding:5px 10px;border-radius:8px;border:1px solid var(--border-md);}
+
+/* scripts */
+.script-group-label{font-size:10px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--text-faint);margin:1.25rem 0 8px;}
+.script-card{border-left:4px solid var(--rose);background:var(--blush);border-radius:0 14px 14px 0;padding:1.1rem 1.4rem;margin-bottom:8px;position:relative;transition:background .3s;}
+.script-sit{font-size:10px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;color:var(--rose);margin-bottom:5px;}
+.script-text{font-size:14px;color:var(--text);line-height:1.7;font-style:italic;margin-bottom:6px;}
+.script-why{font-size:11.5px;color:var(--text-soft);line-height:1.5;}
+.copy-btn{position:absolute;top:10px;right:12px;background:rgba(255,255,255,.85);border:1px solid var(--border-md);border-radius:99px;padding:3px 10px;font-size:11px;font-weight:700;cursor:pointer;color:var(--text-mid);transition:all .16s;}
+.copy-btn:hover{background:var(--rose);color:white;border-color:var(--rose);}
+[data-theme="dark"] .copy-btn{background:rgba(30,19,24,.85);}
+
+/* quiz */
+.quiz-q{background:var(--surface2);border:1px solid var(--border-md);border-radius:16px;padding:1.35rem;margin-bottom:8px;}
+.quiz-q-text{font-size:14px;font-weight:700;color:var(--text);margin-bottom:10px;line-height:1.5;}
+.quiz-opts{display:flex;flex-direction:column;gap:7px;}
+.quiz-opt{padding:9px 14px;border-radius:11px;border:1px solid var(--border-md);background:transparent;font-family:'Cabinet Grotesk',sans-serif;font-size:13px;color:var(--text-mid);text-align:left;cursor:pointer;transition:all .16s;}
+.quiz-opt:hover:not(:disabled){background:var(--blush);border-color:var(--rose-mid);color:var(--rose-deep);}
+.quiz-opt.correct{background:#EAF5ED;border-color:#8FC9A0;color:var(--green);font-weight:700;}
+.quiz-opt.wrong{background:#FAEBEB;border-color:#EDAAB0;color:var(--red);}
+.quiz-opt:disabled{cursor:default;}
+.quiz-explain{margin-top:8px;padding:9px 12px;background:var(--blush);border-radius:10px;font-size:12.5px;color:var(--text-mid);line-height:1.6;display:none;}
+.quiz-explain.show{display:block;}
+
+/* AI result panels */
+.verdict-banner{border-radius:16px;padding:1.35rem;margin-bottom:1rem;text-align:center;border:1px solid var(--border-md);}
+.verdict-banner.clear{background:#EAF5ED;border-color:#8FC9A0;}
+.verdict-banner.caution{background:#FEF3E2;border-color:#F0C872;}
+.verdict-banner.danger{background:#FAEBEB;border-color:#EDAAB0;}
+[data-theme="dark"] .verdict-banner.clear{background:#102010;border-color:#305030;}
+[data-theme="dark"] .verdict-banner.caution{background:#2E2010;border-color:#805020;}
+[data-theme="dark"] .verdict-banner.danger{background:#2E1215;border-color:#7A3040;}
+.verdict-emoji{font-size:2.2rem;display:block;margin-bottom:6px;}
+.verdict-label{font-size:10.5px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;margin-bottom:5px;}
+.verdict-banner.clear .verdict-label{color:var(--green);}
+.verdict-banner.caution .verdict-label{color:var(--amber);}
+.verdict-banner.danger .verdict-label{color:var(--red);}
+.verdict-text{font-family:'Cormorant Garamond',serif;font-size:1.15rem;font-style:italic;line-height:1.5;color:var(--text);}
+.analysis-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:1rem;}
+.analysis-block{background:var(--blush);border-radius:14px;padding:1.1rem;border:1px solid var(--border);}
+.analysis-block-label{font-size:10px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--rose);margin-bottom:8px;}
+.analysis-block p{font-size:13px;color:var(--text-mid);line-height:1.6;}
+.detected-flags{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px;}
+.det-chip{font-size:11.5px;font-weight:700;padding:2px 10px;border-radius:99px;background:#FAEBEB;border:1px solid #EDAAB0;color:#7A2030;}
+[data-theme="dark"] .det-chip{background:#2E1215;border-color:#7A3040;color:#F0A0B0;}
+.ai-bottom{margin-top:1rem;padding:1.1rem 1.4rem;background:var(--blush-deep);border-left:4px solid var(--rose);border-radius:0 14px 14px 0;}
+.ai-bottom-text{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:1.05rem;color:var(--rose-deep);line-height:1.5;}
+.ai-result{display:none;margin-top:1rem;animation:fadeUp .4s ease both;}
+.ai-result.visible{display:block;}
+
+/* ══ GOOD GUY DETECTOR ══ */
+.gg-meters{margin-bottom:1.25rem;}
+.gg-meter-row{margin-bottom:10px;}
+.gg-meter-label{display:flex;justify-content:space-between;font-size:12.5px;font-weight:700;color:var(--text-mid);margin-bottom:4px;}
+.gg-meter{height:10px;background:var(--blush);border-radius:99px;overflow:hidden;}
+.gg-bar{height:100%;border-radius:99px;transition:width .8s cubic-bezier(.34,1.56,.64,1);}
+
+/* ══ SIMULATOR SHARED ══ */
+.sim-meters{background:var(--surface2);border:1px solid var(--border);border-radius:16px;padding:1.1rem;margin-bottom:1rem;}
+.sim-meter-row{margin-bottom:8px;}
+.sim-meter-label{display:flex;justify-content:space-between;font-size:12px;font-weight:700;color:var(--text-mid);margin-bottom:3px;}
+.sim-meter{height:9px;background:var(--blush);border-radius:99px;overflow:hidden;}
+.sim-bar{height:100%;border-radius:99px;transition:width .8s cubic-bezier(.34,1.56,.64,1);}
+.reply-option{
+  background:var(--surface2);border:1px solid var(--border-md);border-radius:16px;
+  padding:14px 18px;margin:8px 0;cursor:pointer;transition:all .25s;font-size:14px;font-family:'Cabinet Grotesk',sans-serif;color:var(--text-mid);text-align:left;width:100%;
+}
+.reply-option:hover{transform:translateX(6px);border-color:var(--rose);color:var(--rose-deep);background:var(--blush);}
+.reply-option.green-hover:hover{border-color:var(--green-l);color:var(--green);}
+.reply-option.purple-hover:hover{border-color:var(--purple-l);color:var(--purple);}
+.story-branch{background:var(--surface);border:1px solid var(--border-md);border-radius:20px;padding:1.5rem;margin-bottom:1rem;animation:fadeUp .35s ease both;}
+.story-branch h4{font-family:'Cormorant Garamond',serif;font-size:1.1rem;font-weight:700;color:var(--text);margin-bottom:.75rem;}
+
+/* ══ LOVE LANGUAGES ══ */
+.love-lang-select{width:100%;padding:12px 16px;border:1px solid var(--border-md);border-radius:14px;background:var(--surface2);font-family:'Cabinet Grotesk',sans-serif;font-size:14.5px;color:var(--text);margin-top:6px;cursor:pointer;transition:border-color .18s;}
+.love-lang-select:focus{outline:none;border-color:var(--rose);}
+.compat-score{text-align:center;padding:1.5rem;background:var(--blush);border-radius:18px;border:1px solid var(--border-md);margin-bottom:1rem;}
+.compat-number{font-family:'Cormorant Garamond',serif;font-size:3rem;font-weight:700;color:var(--rose);line-height:1;}
+.compat-label{font-size:12px;font-weight:700;color:var(--text-mid);letter-spacing:.08em;text-transform:uppercase;margin-top:4px;}
+
+/* ══ GAYDAR ══ */
+.gaydar-banner{border-radius:18px;padding:1.5rem;margin-bottom:1rem;text-align:center;border:2px solid;animation:fadeUp .4s ease both;}
+.gaydar-high{background:linear-gradient(135deg,#F3E5F5,#E8D5F5);border-color:#CE93D8;}
+.gaydar-mid{background:linear-gradient(135deg,#FEF3E2,#FFE0B2);border-color:#FFCC80;}
+.gaydar-low{background:linear-gradient(135deg,#EAF5ED,#C8E6C9);border-color:#A5D6A7;}
+[data-theme="dark"] .gaydar-high{background:linear-gradient(135deg,#2D0845,#3D1060);border-color:#9C27B0;}
+[data-theme="dark"] .gaydar-mid{background:linear-gradient(135deg,#2E2010,#3A2A10);border-color:#805020;}
+[data-theme="dark"] .gaydar-low{background:linear-gradient(135deg,#102010,#1A2E10);border-color:#305030;}
+
+/* ══ TOAST ══ */
+.toast{position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%) translateY(20px);background:var(--text);color:var(--cream);padding:10px 20px;border-radius:99px;font-size:13px;font-weight:600;opacity:0;transition:all .3s;z-index:999;pointer-events:none;white-space:nowrap;}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+/* ══ RESPONSIVE ══ */
+footer{border-top:1px solid var(--border);padding:1.25rem 2rem;text-align:center;font-size:12px;color:var(--text-faint);margin-top:2rem;}
+@media(max-width:640px){
+  nav{padding:0 .75rem;}
+  .nav-name{display:none;}
+  .nav-right{gap:3px;}
+  .nav-tab{padding:4px 9px;font-size:11.5px;}
+  .card{margin:0 .75rem 1rem;padding:1.4rem;}
+  .output{padding:0 .75rem;}
+  .rf-grid,.horsemen-grid,.analysis-grid{grid-template-columns:1fr;}
+  .tactics-grid{grid-template-columns:1fr 1fr;}
+  .card-footer{flex-direction:column;align-items:stretch;gap:8px;}
+  .main-btn{width:100%;justify-content:center;}
+  .sub-nav{padding:0 .75rem 1rem;}
+}
+</style>
+</head>
+<body>
+
+<div class="toast" id="toast"></div>
+<div style="position:fixed;top:8px;left:50%;transform:translateX(-50%);z-index:980;background:var(--rose);color:#fff;font:700 11px/1 'Cabinet Grotesk',sans-serif;letter-spacing:.04em;padding:5px 12px;border-radius:999px;box-shadow:var(--shadow);">DEMO · sample AI results</div>
+
+<!-- ══════════ SAFETY RESOURCES (always available) ══════════ -->
+<style>
+  #safetyFab{position:fixed;right:14px;bottom:14px;z-index:900;border:none;cursor:pointer;
+    background:var(--surface);color:var(--text);border:1px solid var(--border-md);
+    border-radius:999px;padding:9px 14px;font:600 13px/1 'Cabinet Grotesk',sans-serif;
+    box-shadow:var(--shadow);display:flex;align-items:center;gap:6px;transition:transform .15s,box-shadow .2s;}
+  #safetyFab:hover{transform:translateY(-1px);box-shadow:var(--shadow-lg);}
+  #safetyFab.pulse{animation:safetyPulse 1.1s ease-in-out 4;border-color:var(--rose);color:var(--rose);}
+  @keyframes safetyPulse{0%,100%{box-shadow:0 0 0 0 rgba(200,68,92,.35);}50%{box-shadow:0 0 0 8px rgba(200,68,92,0);}}
+  #safetyOverlay{position:fixed;inset:0;z-index:950;background:rgba(20,12,15,.45);
+    display:none;align-items:center;justify-content:center;padding:1rem;}
+  #safetyOverlay.open{display:flex;}
+  #safetyPanel{background:var(--surface);color:var(--text);max-width:420px;width:100%;
+    border:1px solid var(--border-md);border-radius:20px;padding:1.5rem 1.4rem;
+    box-shadow:var(--shadow-lg);position:relative;animation:fadeUp .25s ease both;max-height:90vh;overflow:auto;}
+  #safetyPanel h3{font-family:'Cormorant Garamond',serif;font-size:1.6rem;margin-bottom:.5rem;}
+  #safetyPanel p{font-size:13.5px;color:var(--text-mid);line-height:1.6;margin-bottom:.75rem;}
+  #safetyPanel ul{list-style:none;display:flex;flex-direction:column;gap:9px;margin:.5rem 0 .9rem;}
+  #safetyPanel li{font-size:13.5px;line-height:1.5;background:var(--surface2);border:1px solid var(--border);
+    border-radius:12px;padding:10px 12px;}
+  #safetyPanel a{color:var(--rose);font-weight:700;text-decoration:none;}
+  #safetyPanel a:hover{text-decoration:underline;}
+  #safetyPanel .safety-note{font-size:12px;color:var(--text-soft);margin-bottom:0;}
+  #safetyClose{position:absolute;top:12px;right:12px;border:none;background:var(--surface2);
+    color:var(--text-mid);width:30px;height:30px;border-radius:50%;cursor:pointer;font-size:14px;}
+</style>
+<button id="safetyFab" onclick="toggleSafety()" aria-label="Safety resources" title="Feeling unsafe? Get support">🛟 Get help</button>
+<div id="safetyOverlay" onclick="if(event.target===this)toggleSafety()">
+  <div id="safetyPanel" role="dialog" aria-modal="true" aria-label="Safety resources">
+    <button id="safetyClose" onclick="toggleSafety()" aria-label="Close">✕</button>
+    <h3>You deserve to feel safe 💗</h3>
+    <p>If someone is hurting, threatening, isolating, or controlling you, it is not your fault — and support is free and confidential.</p>
+    <ul>
+      <li><strong>US · Domestic violence:</strong> call <a href="tel:18007997233">1-800-799-7233</a>, or text <strong>START</strong> to <strong>88788</strong></li>
+      <li><strong>US · Crisis &amp; mental health:</strong> call or text <a href="tel:988">988</a></li>
+      <li><strong>Immediate danger:</strong> call your local emergency number (US/Canada <a href="tel:911">911</a>)</li>
+      <li><strong>Outside the US:</strong> find a local line at <a href="https://www.befrienders.org" target="_blank" rel="noopener">befrienders.org</a>, or search “domestic violence helpline” + your country</li>
+    </ul>
+    <p class="safety-note">You can reach out even if you're not sure yet — they can help you think it through and make a plan.</p>
+  </div>
+</div>
+
+<!-- ══════════ NAV ══════════ -->
+<nav>
+  <div class="nav-left">
+    <div class="nav-logo">💋</div>
+    <span class="nav-name">Girl Talk</span>
+  </div>
+  <div class="nav-right">
+    <button class="nav-tab active" onclick="switchTab('decode',this)">🔍 Decode</button>
+    <button class="nav-tab" onclick="switchTab('community',this)">💬 Community</button>
+    <button class="nav-tab" onclick="switchTab('redflags',this)">🚩 Red Flags</button>
+    <button class="nav-tab" onclick="switchTab('player',this)">🚫 Player Stopper</button>
+    <button class="nav-tab" onclick="switchTab('goodguy',this)">🌟 Good Guy</button>
+    <button class="nav-tab" onclick="switchTab('attachment',this)">❤️ Attachment</button>
+    <button class="nav-tab" onclick="switchTab('gaydar',this)">🌈 Gaydar</button>
+    <button class="theme-btn" onclick="toggleTheme()" id="themeBtn">🌙</button>
+  </div>
+</nav>
+
+<!-- ══════════════════════════════════════
+     TAB: DECODE
+══════════════════════════════════════ -->
+<div class="tab-panel active" id="tab-decode">
+  <section class="hero">
+    <div class="hero-badge">✦ No sugarcoating. Just truth.</div>
+    <h1>What did he <em>really</em> mean?</h1>
+    <p class="hero-sub">Paste his text, describe what happened — get a brutally honest breakdown backed by real psychology.</p>
+  </section>
+
+  <div class="card" id="inputCard">
+    <div class="section-label">What happened?</div>
+    <div class="pills">
+      <button class="pill active" onclick="selectPill(this)">📱 He texted</button>
+      <button class="pill" onclick="selectPill(this)">👻 He ghosted</button>
+      <button class="pill" onclick="selectPill(this)">💬 Mixed signals</button>
+      <button class="pill" onclick="selectPill(this)">📅 Cancelled plans</button>
+      <button class="pill" onclick="selectPill(this)">🌙 Late night text</button>
+      <button class="pill" onclick="selectPill(this)">❤️ Social media move</button>
+      <button class="pill" onclick="selectPill(this)">😶 His behavior IRL</button>
+      <button class="pill" onclick="selectPill(this)">🔁 He came back</button>
+    </div>
+    <div class="input-wrap">
+      <textarea id="situationInput" maxlength="600"
+        placeholder="Paste his exact message or describe what happened…"
+        oninput="updateCC()"></textarea>
+      <span class="char-count" id="charCount">0 / 600</span>
+    </div>
+    <div class="card-footer">
+      <div class="tone-group">
+        <div class="tone-label">Tone</div>
+        <div class="tone-row">
+          <button class="tone-btn active" onclick="selectTone(this)" data-tone="brutal">🔥 Brutal</button>
+          <button class="tone-btn" onclick="selectTone(this)" data-tone="balanced">⚖️ Balanced</button>
+          <button class="tone-btn" onclick="selectTone(this)" data-tone="gentle">🫶 Gentle</button>
+        </div>
+      </div>
+      <button class="main-btn" id="decodeBtn" onclick="decodeWithAI()">Decode It →</button>
+    </div>
+  </div>
+
+  <div class="output" id="output">
+    <div class="out-section">
+      <div class="out-tag">🔍 What he actually means</div>
+      <p class="decode-text" id="decodeText"></p>
+    </div>
+    <div class="out-section">
+      <div class="out-tag">📊 Probability breakdown</div>
+      <div id="probRows"></div>
+    </div>
+    <div class="out-section" id="flagSection">
+      <div class="out-tag">🚩 Red flag report</div>
+      <div id="flagChipsWrap"></div>
+      <p id="flagTextEl" style="font-size:14px;color:var(--text-mid);line-height:1.65;"></p>
+    </div>
+    <div class="out-section">
+      <div class="out-tag">💬 Your move</div>
+      <div id="optionsList"></div>
+    </div>
+    <div class="bottom-line" id="bottomLineEl"></div>
+    <div class="action-row">
+      <button class="act-btn act-btn-primary" onclick="shareToCommunity()">💬 Share to Community</button>
+      <button class="act-btn act-btn-ghost" onclick="resetDecode()">↩ Try Another</button>
+    </div>
+  </div>
+
+  <div style="max-width:720px;margin:1rem auto 3rem;display:grid;grid-template-columns:repeat(3,1fr);gap:10px;padding:0 1rem;">
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:1.25rem;">
+      <div style="font-size:22px;margin-bottom:8px;">📊</div>
+      <div style="font-size:13.5px;font-weight:700;margin-bottom:4px;">Probability Breakdown</div>
+      <div style="font-size:12px;color:var(--text-mid);line-height:1.5;">Real % on what's actually going on.</div>
+    </div>
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:1.25rem;">
+      <div style="font-size:22px;margin-bottom:8px;">🚩</div>
+      <div style="font-size:13.5px;font-weight:700;margin-bottom:4px;">Red Flag Report</div>
+      <div style="font-size:12px;color:var(--text-mid);line-height:1.5;">Named patterns — breadcrumbing, orbiting & more.</div>
+    </div>
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:1.25rem;">
+      <div style="font-size:22px;margin-bottom:8px;">💬</div>
+      <div style="font-size:13.5px;font-weight:700;margin-bottom:4px;">4 Response Options</div>
+      <div style="font-size:12px;color:var(--text-mid);line-height:1.5;">From unbothered queen to full mic drop.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     TAB: COMMUNITY
+══════════════════════════════════════ -->
+<div class="tab-panel" id="tab-community">
+  <div class="community-wrap">
+    <div class="community-header">
+      <h2>What the girls are saying 💬</h2>
+      <p>Anonymous decodes shared by the community. You are not alone, sis.</p>
+    </div>
+    <div id="communityFeed">
+      <div class="empty-state">
+        <div class="emoji">👀</div>
+        <p>No decodes shared yet.<br>Decode something and hit <strong>Share to Community.</strong></p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     TAB: RED FLAGS
+══════════════════════════════════════ -->
+<div class="tab-panel" id="tab-redflags">
+<div style="max-width:760px;margin:0 auto;padding:2rem 1.25rem 4rem;">
+  <div class="hero" style="padding:3rem 0 2rem;">
+    <div class="hero-badge">🚩 Know what you're looking at.</div>
+    <h1 class="ps-title" style="font-family:'Cormorant Garamond',serif;font-size:clamp(2.2rem,5vw,3.4rem);font-weight:700;line-height:1.1;letter-spacing:-.02em;margin-bottom:.8rem;">Red <em style="color:var(--rose);font-style:italic;">Flags</em></h1>
+    <p style="font-size:15px;line-height:1.75;color:var(--text-mid);max-width:480px;margin:0 auto;">Not every red flag is a player move. Communication breakdowns, emotional unavailability, attachment wounds — know them all.</p>
+  </div>
+
+  <div class="sub-nav">
+    <button class="sub-tab active" onclick="showSub('rf','communication',this)">💬 Communication</button>
+    <button class="sub-tab" onclick="showSub('rf','emotional',this)">💔 Emotional</button>
+    <button class="sub-tab" onclick="showSub('rf','gottman',this)">🔬 Gottman</button>
+    <button class="sub-tab" onclick="showSub('rf','dealbreakers',this)">⛔ Deal Breakers</button>
+    <button class="sub-tab" onclick="showSub('rf','rfai',this)">✨ AI Check</button>
+  </div>
+
+  <!-- COMMUNICATION -->
+  <div class="section-panel active" id="rf-communication">
+    <div class="card" style="max-width:none;">
+      <div class="section-label">💬 How He Talks to You</div>
+      <div class="section-title">Communication Red Flags</div>
+      <div class="section-desc">Patterns that erode relationships slowly — not player tactics, deeper incompatibility or immaturity.</div>
+      <div class="rf-grid">
+        <div class="rf-item"><div class="rf-header"><span class="rf-icon">🤫</span><div><div class="rf-name">Silent Treatment</div><span class="sev sev-high">High</span></div></div><div class="rf-body">Withdrawing all communication as punishment. This is emotional control, not conflict avoidance. Conditions you to stop raising concerns to avoid being shut out.<br><br><strong>Healthy version:</strong> "I need an hour to cool down — then let's talk."</div></div>
+        <div class="rf-item"><div class="rf-header"><span class="rf-icon">🌀</span><div><div class="rf-name">Gaslighting</div><span class="sev sev-high">High</span></div></div><div class="rf-body">"That never happened." "You're too sensitive." Makes you question your own perception of reality — one of the most damaging patterns possible.<br><br><strong>Protect yourself:</strong> Write things down. Your memory is valid.</div></div>
+        <div class="rf-item"><div class="rf-header"><span class="rf-icon">🔀</span><div><div class="rf-name">Moving the Goalposts</div><span class="sev sev-med">Med</span></div></div><div class="rf-body">Every time you meet his stated need, the requirement changes. The bar was never meant to be cleared.<br><br><strong>Pattern check:</strong> Count how many times you've adjusted. Has it ever been enough?</div></div>
+        <div class="rf-item"><div class="rf-header"><span class="rf-icon">📢</span><div><div class="rf-name">Volume Over Logic</div><span class="sev sev-med">Med</span></div></div><div class="rf-body">Wins arguments by getting louder instead of being right. Shuts down your ability to think clearly.<br><br><strong>Script:</strong> "I can't hear what you're saying when it comes out this way. I'll come back when we're both calmer."</div></div>
+        <div class="rf-item"><div class="rf-header"><span class="rf-icon">🎯</span><div><div class="rf-name">Weaponized Vulnerability</div><span class="sev sev-high">High</span></div></div><div class="rf-body">Shares pain strategically to gain sympathy, deflect criticism, or avoid accountability. Real vulnerability builds trust — weaponized vulnerability extracts it.<br><br><strong>Question:</strong> Does sharing lead to connection, or do you always end up comforting him about something he did?</div></div>
+        <div class="rf-item"><div class="rf-header"><span class="rf-icon">🧊</span><div><div class="rf-name">Contempt in Disguise</div><span class="sev sev-high">High</span></div></div><div class="rf-body">Eye rolls, dismissive sighs, mockery of your concerns. Contempt — not conflict — is the #1 predictor of relationship failure (Gottman).<br><br><strong>Zero tolerance:</strong> Disagreement is normal. Contempt is not.</div></div>
+        <div class="rf-item"><div class="rf-header"><span class="rf-icon">🚪</span><div><div class="rf-name">Threatening to Leave</div><span class="sev sev-high">High</span></div></div><div class="rf-body">Using the relationship as a bargaining chip mid-argument. "Maybe we shouldn't be together then." Designed to make you back down.<br><br><strong>Response:</strong> "If you feel that way, we should talk about that directly."</div></div>
+        <div class="rf-item"><div class="rf-header"><span class="rf-icon">🪤</span><div><div class="rf-name">Trap Questions</div><span class="sev sev-med">Med</span></div></div><div class="rf-body">Asks questions designed to catch you out. "So you're saying you don't care about me?" — every answer becomes evidence against you.<br><br><strong>Redirect:</strong> "That's not what I said. What I said was [original point]."</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- EMOTIONAL -->
+  <div class="section-panel" id="rf-emotional">
+    <div class="card" style="max-width:none;">
+      <div class="section-label">💔 Emotional Availability</div>
+      <div class="section-title">Emotional Red Flags</div>
+      <div class="section-desc">Emotional unavailability isn't always malicious — sometimes it's unhealed. Either way, you can't build a real relationship with someone who isn't present.</div>
+      <div class="rf-grid">
+        <div class="rf-item"><div class="rf-header"><span class="rf-icon">🧊</span><div><div class="rf-name">Emotional Flatness</div><span class="sev sev-med">Med</span></div></div><div class="rf-body">No range. Can't name feelings beyond "fine" or "annoyed." Not reserved — actually disconnected from his own emotional world. Over time: you carry the emotional weight of the relationship alone.</div></div>
+        <div class="rf-item"><div class="rf-header"><span class="rf-icon">🏃</span><div><div class="rf-name">Intimacy Avoidance</div><span class="sev sev-high">High</span></div></div><div class="rf-body">Great on the surface but pulls back whenever real closeness builds. Gets cold after a vulnerable moment. <strong>Pattern:</strong> The better things get, the more distant he becomes.</div></div>
+        <div class="rf-item"><div class="rf-header"><span class="rf-icon">🪞</span><div><div class="rf-name">Lack of Empathy</div><span class="sev sev-high">High</span></div></div><div class="rf-body">When you share something hard, he pivots to himself, problem-solves instead of listening, or minimizes. Your emotional experience doesn't land with him.<br><br><strong>Test:</strong> How does he respond when you cry?</div></div>
+        <div class="rf-item"><div class="rf-header"><span class="rf-icon">🎭</span><div><div class="rf-name">Emotional Labor Imbalance</div><span class="sev sev-high">High</span></div></div><div class="rf-body">You track the relationship's health, bring up hard conversations, manage his feelings, initiate repair. He just shows up.<br><br><strong>Ask yourself:</strong> Who would notice first if things went wrong?</div></div>
+        <div class="rf-item"><div class="rf-header"><span class="rf-icon">🎪</span><div><div class="rf-name">Emotional Immaturity</div><span class="sev sev-high">High</span></div></div><div class="rf-body">Sulking instead of communicating. Tantrums when he doesn't get his way. Can't handle being wrong without making it everyone else's problem.<br><br><strong>Hard truth:</strong> You cannot parent someone into emotional adulthood.</div></div>
+        <div class="rf-item"><div class="rf-header"><span class="rf-icon">🔋</span><div><div class="rf-name">You Feel Drained, Not Filled</div><span class="sev sev-high">High</span></div></div><div class="rf-body">After time with him, you regularly feel exhausted or anxious. Healthy relationships are net positive energy. If he consistently costs more than he contributes, that's data.<br><br><strong>Body check:</strong> How do you feel driving home?</div></div>
+        <div class="rf-item"><div class="rf-header"><span class="rf-icon">🔄</span><div><div class="rf-name">Unprocessed Past</div><span class="sev sev-med">Med</span></div></div><div class="rf-body">Brings ex-relationship pain or childhood wounds into current behavior without self-awareness. You're paying for what someone else did. Not his fault — but his responsibility.<br><br><strong>Key question:</strong> Is he working on it, or expecting you to work around it forever?</div></div>
+        <div class="rf-item"><div class="rf-header"><span class="rf-icon">📉</span><div><div class="rf-name">Chronic Negativity</div><span class="sev sev-med">Med</span></div></div><div class="rf-body">Nothing is ever good enough. Constant complaints, no appreciation, no gratitude. You become his emotional dumping ground.<br><br><strong>Warning:</strong> Negativity is contagious. His worldview will color yours.</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- GOTTMAN -->
+  <div class="section-panel" id="rf-gottman">
+    <div class="card" style="max-width:none;">
+      <div class="section-label">🔬 Research-Backed</div>
+      <div class="section-title">The Four Horsemen</div>
+      <div class="section-desc">Gottman's research identified these four patterns that predict relationship failure with over 90% accuracy. Occasional = human. Chronic + unrepaired = over.</div>
+      <div class="horsemen-grid">
+        <div class="horseman-card h-red">
+          <div class="horseman-num">01</div><div class="horseman-name">Criticism</div>
+          <div class="horseman-def">Attacking who he is, not what he did. "You always…" "You never…" Turns a specific complaint into a character indictment.</div>
+          <div class="horseman-example">❌ "You're so selfish, you never think about anyone."<br>✅ "I felt hurt when plans changed — can we talk?"</div>
+          <div class="horseman-antidote">Antidote: Gentle Startup — "I feel…" not "You are…"</div>
+        </div>
+        <div class="horseman-card h-darkred">
+          <div class="horseman-num">02</div><div class="horseman-name">Contempt</div>
+          <div class="horseman-def">The most destructive. Sarcasm, mockery, eye-rolls, dismissiveness. Gottman calls it "sulfuric acid for love."</div>
+          <div class="horseman-example">❌ Eye roll + "Whatever you say."<br>❌ "You're pathetic for feeling that."<br>✅ "I disagree — here's why."</div>
+          <div class="horseman-antidote">Antidote: Culture of Appreciation — contempt can't survive genuine gratitude.</div>
+        </div>
+        <div class="horseman-card h-amber">
+          <div class="horseman-num">03</div><div class="horseman-name">Defensiveness</div>
+          <div class="horseman-def">Counter-attacking or playing victim when held accountable. "Well you do it too." Never actually hears the concern raised.</div>
+          <div class="horseman-example">❌ "Why are you always on my case? YOU'RE the one who…"<br>✅ "You're right. I dropped the ball."</div>
+          <div class="horseman-antidote">Antidote: Take Responsibility — even partial ownership changes everything.</div>
+        </div>
+        <div class="horseman-card h-gray">
+          <div class="horseman-num">04</div><div class="horseman-name">Stonewalling</div>
+          <div class="horseman-def">Complete emotional shutdown. Stops responding, checks out, goes monosyllabic. Leaves the other person in an impossible position.</div>
+          <div class="horseman-example">❌ Silent, won't look at you, leaves.<br>✅ "I'm overwhelmed. Can we take 20 min and come back?"</div>
+          <div class="horseman-antidote">Antidote: Named timeout + genuine return to the conversation.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DEAL BREAKERS -->
+  <div class="section-panel" id="rf-dealbreakers">
+    <div class="card" style="max-width:none;">
+      <div class="section-label">⛔ Non-Negotiable</div>
+      <div class="section-title">Absolute Deal Breakers</div>
+      <div class="section-desc">These are not red flags. These are stop signs. No history, love, or explanation makes these acceptable.</div>
+      <div class="rf-grid">
+        <div class="rf-item" style="border-color:#EDAAB0;"><div class="rf-header"><span class="rf-icon">👊</span><div><div class="rf-name">Any Physical Aggression</div><span class="sev sev-high">High</span></div></div><div class="rf-body">Hitting, grabbing, pushing, blocking exits, throwing things near you. It almost never happens once. The first incident is not an anomaly — it's a prediction. <strong>Leave. Safely. With support.</strong></div></div>
+        <div class="rf-item" style="border-color:#EDAAB0;"><div class="rf-header"><span class="rf-icon">🧠</span><div><div class="rf-name">Sustained Emotional Abuse</div><span class="sev sev-high">High</span></div></div><div class="rf-body">A consistent pattern of humiliation, control, or systematic destruction of your self-worth. Not a bad week — a pattern. This causes real psychological harm. It counts without bruises.</div></div>
+        <div class="rf-item" style="border-color:#EDAAB0;"><div class="rf-header"><span class="rf-icon">💰</span><div><div class="rf-name">Financial Control</div><span class="sev sev-high">High</span></div></div><div class="rf-body">Controlling your money access, sabotaging your job, creating dependency. Economic abuse is one of the primary reasons people can't leave — it's by design.</div></div>
+        <div class="rf-item" style="border-color:#EDAAB0;"><div class="rf-header"><span class="rf-icon">🔐</span><div><div class="rf-name">Non-Consensual Behavior</div><span class="sev sev-high">High</span></div></div><div class="rf-body">Pressure, coercion, or disregard for stated limits. "No" is a complete sentence. Any pushback on that is a fundamental disqualifier. Always.</div></div>
+        <div class="rf-item" style="border-color:#EDAAB0;"><div class="rf-header"><span class="rf-icon">🕵️</span><div><div class="rf-name">Stalking / Monitoring</div><span class="sev sev-high">High</span></div></div><div class="rf-body">Showing up uninvited, tracking location without consent, going through your phone. Framed as love or protection — it's control.</div></div>
+        <div class="rf-item" style="border-color:#EDAAB0;"><div class="rf-header"><span class="rf-icon">🔥</span><div><div class="rf-name">No Remorse, Ever</div><span class="sev sev-high">High</span></div></div><div class="rf-body">Does something harmful, you raise it, he feels nothing — or gets angry you're bothered. Remorse is the engine of repair. Without it, there is no path forward, only repetition.</div></div>
+      </div>
+      <div style="margin-top:1.25rem;padding:1.1rem 1.4rem;background:#FAEBEB;border-radius:14px;border:1px solid #EDAAB0;">
+        <div style="font-size:10px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:#7A2030;margin-bottom:6px;">If You Are in Danger</div>
+        <p style="font-size:13.5px;color:#5A1020;line-height:1.7;">National Domestic Violence Hotline: <strong>1-800-799-7233</strong> · Text START to <strong>88788</strong> · Chat at <strong>thehotline.org</strong><br>Leaving is the most dangerous time — please reach out for support before you go.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- RF AI CHECK -->
+  <div class="section-panel" id="rf-rfai">
+    <div class="card" style="max-width:none;">
+      <div class="section-label">✨ AI Powered</div>
+      <div class="section-title">Red Flag Checker</div>
+      <div class="section-desc">Describe what's been happening — his behavior, communication patterns, what worries you. Get specific flags named and what they actually mean.</div>
+      <div style="position:relative;">
+        <textarea id="rfInput" maxlength="800" class="" style="margin-bottom:0;"
+          placeholder="e.g. 'He's great when things are good but shuts down completely in arguments. He'll go silent for days and when I bring up how that affects me he says I'm too sensitive…'"
+          oninput="document.getElementById('rfChar').textContent=this.value.length+' / 800'"></textarea>
+        <span class="char-count" id="rfChar">0 / 800</span>
+      </div>
+      <button class="main-btn wide" id="rfBtn" onclick="analyzeRedFlags()" style="margin-top:.75rem;">Check for Red Flags →</button>
+      <div class="ai-result" id="rfResult">
+        <div class="verdict-banner" id="rfBanner"><span class="verdict-emoji" id="rfEmoji"></span><div class="verdict-label" id="rfLabel"></div><div class="verdict-text" id="rfVerdictText"></div></div>
+        <div class="analysis-grid">
+          <div class="analysis-block"><div class="analysis-block-label">🚩 Flags Identified</div><div class="detected-flags" id="rfFlagChips"></div></div>
+          <div class="analysis-block"><div class="analysis-block-label">📊 Pattern Type</div><p id="rfPattern"></p></div>
+          <div class="analysis-block"><div class="analysis-block-label">🔮 Where This Goes</div><p id="rfProjection"></p></div>
+          <div class="analysis-block"><div class="analysis-block-label">💡 What You Should Know</div><p id="rfKnow"></p></div>
+        </div>
+        <div class="card" style="max-width:none;margin-bottom:0;padding:1.4rem;"><div class="section-label">💬 How to Respond</div><div id="rfMoves"></div></div>
+        <div class="ai-bottom"><div class="ai-bottom-text" id="rfBottom"></div></div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ══════════════════════════════════════
+     TAB: PLAYER STOPPER
+══════════════════════════════════════ -->
+<div class="tab-panel" id="tab-player">
+<div style="max-width:760px;margin:0 auto;padding:2rem 1.25rem 4rem;">
+  <div class="hero" style="padding:3rem 0 2rem;">
+    <div class="hero-badge">🚫 No cap. No games. No players.</div>
+    <h1 style="font-family:'Cormorant Garamond',serif;font-size:clamp(2.2rem,5vw,3.4rem);font-weight:700;line-height:1.1;letter-spacing:-.02em;margin-bottom:.8rem;">Player <em style="color:var(--rose);font-style:italic;">Stopper</em></h1>
+    <p style="font-size:15px;line-height:1.75;color:var(--text-mid);max-width:480px;margin:0 auto;">Every tactic exposed. Every line named. Study this once and you'll never be caught off guard again.</p>
+  </div>
+
+  <div class="sub-nav">
+    <button class="sub-tab active" onclick="showSub('ps','scan',this)">🔍 Scan Him</button>
+    <button class="sub-tab" onclick="showSub('ps','tactics',this)">🎭 Tactics</button>
+    <button class="sub-tab" onclick="showSub('ps','scripts',this)">💬 Scripts</button>
+    <button class="sub-tab" onclick="showSub('ps','quiz',this)">🧠 Quiz</button>
+    <button class="sub-tab" onclick="showSub('ps','psai',this)">✨ AI Analyze</button>
+  </div>
+
+  <!-- SCAN -->
+  <div class="section-panel active" id="ps-scan">
+    <div class="card" style="max-width:none;">
+      <div class="section-label">🚩 Interactive Checklist</div>
+      <div class="section-title">Red Flag Scanner</div>
+      <div class="section-desc">Check every flag that applies. The more you check, the clearer the picture gets.</div>
+      <div class="score-meter"><div class="score-fill" id="scoreFill"></div></div>
+      <div class="score-labels"><span>No flags</span><span>Caution</span><span>Run.</span></div>
+      <div class="score-verdict" id="scoreVerdict">Check the flags that apply.</div>
+      <ul class="flag-list" id="flagList">
+        <li class="flag-item" onclick="toggleFlag(this)"><div class="fcheck"></div><div class="flag-content"><div class="flag-name">💣 Love Bombing</div><div class="flag-desc">Too intense too fast — constant texts, over-the-top compliments, "I've never met anyone like you" in week one.</div></div><span class="sev sev-high">High</span></li>
+        <li class="flag-item" onclick="toggleFlag(this)"><div class="fcheck"></div><div class="flag-content"><div class="flag-name">🥶 Hot & Cold Behavior</div><div class="flag-desc">Amazing and attentive one day, distant and cold the next. You never know which version you're getting.</div></div><span class="sev sev-high">High</span></li>
+        <li class="flag-item" onclick="toggleFlag(this)"><div class="fcheck"></div><div class="flag-content"><div class="flag-name">😬 Negging</div><div class="flag-desc">Backhanded compliments or subtle put-downs designed to make you feel insecure and seek his approval.</div></div><span class="sev sev-high">High</span></li>
+        <li class="flag-item" onclick="toggleFlag(this)"><div class="fcheck"></div><div class="flag-content"><div class="flag-name">🗓️ Future Faking</div><div class="flag-desc">Big plans that never materialize — trips, meeting friends, "us in 6 months." All talk, zero follow-through.</div></div><span class="sev sev-high">High</span></li>
+        <li class="flag-item" onclick="toggleFlag(this)"><div class="fcheck"></div><div class="flag-content"><div class="flag-name">👻 Breadcrumbing</div><div class="flag-desc">Just enough attention to keep you engaged but never enough to move forward. The crumbs ARE the meal.</div></div><span class="sev sev-high">High</span></li>
+        <li class="flag-item" onclick="toggleFlag(this)"><div class="fcheck"></div><div class="flag-content"><div class="flag-name">🏆 Triangulation</div><div class="flag-desc">Mentions other women to make you jealous. Makes you feel like you have to compete for his attention.</div></div><span class="sev sev-high">High</span></li>
+        <li class="flag-item" onclick="toggleFlag(this)"><div class="fcheck"></div><div class="flag-content"><div class="flag-name">🌫️ Vague About His Life</div><div class="flag-desc">Can't tell you where he lives, works, or who he spends time with. Everything is conveniently unclear.</div></div><span class="sev sev-high">High</span></li>
+        <li class="flag-item" onclick="toggleFlag(this)"><div class="fcheck"></div><div class="flag-content"><div class="flag-name">📵 Selective Availability</div><div class="flag-desc">Only available late nights or randomly. Always busy during the day or weekends. Never lines up.</div></div><span class="sev sev-high">High</span></li>
+        <li class="flag-item" onclick="toggleFlag(this)"><div class="fcheck"></div><div class="flag-content"><div class="flag-name">🔒 Soft-Launch Limbo</div><div class="flag-desc">Months in and you've never met his friends, not on his social media, relationship talk keeps getting deferred.</div></div><span class="sev sev-high">High</span></li>
+        <li class="flag-item" onclick="toggleFlag(this)"><div class="fcheck"></div><div class="flag-content"><div class="flag-name">🧨 Intermittent Reinforcement</div><div class="flag-desc">Reward and withdrawal cycle. Great moments followed by coldness. More addictive than consistency — by design.</div></div><span class="sev sev-high">High</span></li>
+        <li class="flag-item" onclick="toggleFlag(this)"><div class="fcheck"></div><div class="flag-content"><div class="flag-name">🪄 DARVO</div><div class="flag-desc">When confronted, he Denies, Attacks, Reverses Victim/Offender. You end up apologizing for bringing it up.</div></div><span class="sev sev-high">High</span></li>
+        <li class="flag-item" onclick="toggleFlag(this)"><div class="fcheck"></div><div class="flag-content"><div class="flag-name">🪐 Orbiting</div><div class="flag-desc">Gone from your life but watches every story, likes every post. No real engagement — just enough to stay on your radar.</div></div><span class="sev sev-med">Med</span></li>
+        <li class="flag-item" onclick="toggleFlag(this)"><div class="fcheck"></div><div class="flag-content"><div class="flag-name">🪞 Excessive Mirroring</div><div class="flag-desc">Suddenly loves everything you love. Mirrors your values and goals suspiciously fast. No real depth to it.</div></div><span class="sev sev-med">Med</span></li>
+        <li class="flag-item" onclick="toggleFlag(this)"><div class="fcheck"></div><div class="flag-content"><div class="flag-name">😰 Guilt Trips</div><div class="flag-desc">Makes you feel guilty for having needs, setting limits, or calling out his behavior. Always turns it around.</div></div><span class="sev sev-high">High</span></li>
+        <li class="flag-item" onclick="toggleFlag(this)"><div class="fcheck"></div><div class="flag-content"><div class="flag-name">🧱 Boundary Pushing</div><div class="flag-desc">Consistently tests physical or emotional limits. Respects your boundary once, then tries again later.</div></div><span class="sev sev-high">High</span></li>
+      </ul>
+      <div style="display:flex;gap:10px;margin-top:1rem;flex-wrap:wrap;">
+        <button onclick="resetFlags()" style="flex:1;min-width:80px;padding:11px;background:var(--blush);border:1px solid var(--border-md);border-radius:99px;font-weight:700;color:var(--text-mid);font-size:13.5px;cursor:pointer;transition:all .18s;" onmouseover="this.style.borderColor='var(--rose)'" onmouseout="this.style.borderColor='var(--border-md)'">Reset</button>
+        <button onclick="sharePlayerScan()" style="flex:2;min-width:140px;padding:11px;background:linear-gradient(135deg,var(--rose),var(--rose-deep));color:white;border:none;border-radius:99px;font-weight:700;font-size:13.5px;cursor:pointer;">Save My Scan →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TACTICS -->
+  <div class="section-panel" id="ps-tactics">
+    <div class="card" style="max-width:none;">
+      <div class="section-label">🎭 Playbook Exposed</div>
+      <div class="section-title">Player Tactics, Decoded</div>
+      <div class="section-desc">Every move has a name. Once you know the name, you own the game. Tap to expand.</div>
+      <div class="tactics-grid">
+        <div class="tactic-card" onclick="toggleTactic(this)"><div class="tactic-icon">💣</div><div class="tactic-name">Love Bombing</div><div class="tactic-preview">Overwhelming affection as control.</div><div class="tactic-detail"><p><strong>What it is:</strong> Flooding you with intensity before real trust is built to fast-track emotional bonding so you overlook red flags later.</p><p><strong>Why it works:</strong> Activates attachment early. Once bonded, you excuse bad behavior to protect the relationship.</p><div class="tactic-counter">Counter: Slow it down deliberately. A secure man matches your pace. A love bomber escalates pressure.</div></div></div>
+        <div class="tactic-card" onclick="toggleTactic(this)"><div class="tactic-icon">🔄</div><div class="tactic-name">Intermittent Reinforcement</div><div class="tactic-preview">Random rewards create obsession.</div><div class="tactic-detail"><p><strong>What it is:</strong> Unpredictable warmth and coldness. Your nervous system stays locked in, waiting for the next good moment.</p><p><strong>Why it works:</strong> Slot machines use the same principle. Random rewards are more addictive than consistent ones.</p><div class="tactic-counter">Counter: Track 30 days. Is anything actually progressing? If not, breadcrumbing is the full offer.</div></div></div>
+        <div class="tactic-card" onclick="toggleTactic(this)"><div class="tactic-icon">😬</div><div class="tactic-name">Negging</div><div class="tactic-preview">Lower your esteem, then offer it back.</div><div class="tactic-detail"><p><strong>What it is:</strong> Subtle insult disguised as humor. "You're cute for someone who doesn't really try." Makes you seek his approval to restore what he strategically lowered.</p><div class="tactic-counter">Counter: Don't chase the compliment. A man who genuinely likes you builds you up.</div></div></div>
+        <div class="tactic-card" onclick="toggleTactic(this)"><div class="tactic-icon">🏆</div><div class="tactic-name">Triangulation</div><div class="tactic-preview">Using other women as leverage.</div><div class="tactic-detail"><p><strong>What it is:</strong> Mentioning other women or exes to activate jealousy and make you compete for his attention.</p><p><strong>Why it works:</strong> Jealousy triggers attachment. We pursue what we might lose.</p><div class="tactic-counter">Counter: "That sounds like something you should explore." Exit the competition entirely.</div></div></div>
+        <div class="tactic-card" onclick="toggleTactic(this)"><div class="tactic-icon">🗓️</div><div class="tactic-name">Future Faking</div><div class="tactic-preview">Plans that create bonds but never arrive.</div><div class="tactic-detail"><p><strong>What it is:</strong> Elaborate promises about a shared future — trips, moving in, "our kids" — that never materialize.</p><div class="tactic-counter">Counter: Require follow-through on small things first. Someone who future-fakes can't consistently plan a real date.</div></div></div>
+        <div class="tactic-card" onclick="toggleTactic(this)"><div class="tactic-icon">🧨</div><div class="tactic-name">DARVO</div><div class="tactic-preview">Flip the script when you call him out.</div><div class="tactic-detail"><p><strong>What it is:</strong> Deny, Attack, Reverse Victim and Offender. You raise a concern → he denies, attacks your character, becomes the victim.</p><div class="tactic-counter">Counter: "We're not there yet — I asked about X." Persistent calm repetition is the most powerful move.</div></div></div>
+        <div class="tactic-card" onclick="toggleTactic(this)"><div class="tactic-icon">📵</div><div class="tactic-name">Strategic Unavailability</div><div class="tactic-preview">Scarcity creates desire.</div><div class="tactic-detail"><p><strong>What it is:</strong> Deliberately hard to reach — not because he's busy, but because scarcity creates desire.</p><div class="tactic-counter">Counter: Match his energy exactly. Don't overfunction. The right person will notice and fix it.</div></div></div>
+        <div class="tactic-card" onclick="toggleTactic(this)"><div class="tactic-icon">💧</div><div class="tactic-name">Soft Ghosting</div><div class="tactic-preview">Fading without the courage to end it.</div><div class="tactic-detail"><p><strong>What it is:</strong> Gradually reducing communication until the relationship dies. You do the breakup work for him.</p><div class="tactic-counter">Counter: Name it once: "It seems like things have faded — are we on the same page?" His response is your answer.</div></div></div>
+        <div class="tactic-card" onclick="toggleTactic(this)"><div class="tactic-icon">🪐</div><div class="tactic-name">Orbiting</div><div class="tactic-preview">Gone but never fully gone.</div><div class="tactic-detail"><p><strong>What it is:</strong> After ghosting, stays in your digital orbit — stories, likes — with zero real engagement or commitment.</p><div class="tactic-counter">Counter: Restrict or soft block. If he's not showing up in real life, he doesn't get to show up in your digital space.</div></div></div>
+        <div class="tactic-card" onclick="toggleTactic(this)"><div class="tactic-icon">🔐</div><div class="tactic-name">Situationship Lock-In</div><div class="tactic-preview">All the benefits, zero commitment.</div><div class="tactic-detail"><p><strong>What it is:</strong> All the feelings of a relationship — intimacy, emotional dependence — while keeping labels off indefinitely.</p><div class="tactic-counter">Counter: Set a timeline. "I'll know in 60 days if we're moving somewhere real." Then honor it.</div></div></div>
+        <div class="tactic-card" onclick="toggleTactic(this)"><div class="tactic-icon">🪤</div><div class="tactic-name">Mirroring</div><div class="tactic-preview">Reflecting your personality back at you.</div><div class="tactic-detail"><p><strong>What it is:</strong> Rapidly adopting your values, interests, communication style to seem like your perfect match.</p><div class="tactic-counter">Counter: Ask deeper questions. A mirrorer has no depth — can't hold a real conversation about what they claim to love.</div></div></div>
+        <div class="tactic-card" onclick="toggleTactic(this)"><div class="tactic-icon">🎣</div><div class="tactic-name">Breadcrumbing</div><div class="tactic-preview">Minimum effort, maximum access.</div><div class="tactic-detail"><p><strong>What it is:</strong> Sporadic attention — just enough to keep you emotionally invested without real commitment or forward movement.</p><div class="tactic-counter">Counter: The crumbs ARE the meal. He's not warming up — this is the full offer.</div></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCRIPTS -->
+  <div class="section-panel" id="ps-scripts">
+    <div class="card" style="max-width:none;">
+      <div class="section-label">💬 Ready to Use</div>
+      <div class="section-title">Shutdown Scripts</div>
+      <div class="section-desc">Real words for real situations. Copy. Send. Done. No JADE-ing needed — you don't owe anyone a dissertation on your standards.</div>
+      <div class="script-group-label" style="margin-top:0;">He's Being Vague or Unavailable</div>
+      <div class="script-card"><button class="copy-btn" onclick="copyScript(this)">Copy</button><div class="script-sit">He's "so busy" again</div><div class="script-text">"I get that life gets busy. I'm just going to start matching your energy so we're both comfortable."</div><div class="script-why">No ultimatum, no begging. Communicates consequences through action. He adjusts or reveals himself.</div></div>
+      <div class="script-card"><button class="copy-btn" onclick="copyScript(this)">Copy</button><div class="script-sit">He keeps cancelling</div><div class="script-text">"I've noticed plans keep falling through and I don't want to keep putting myself in that position. I need someone who shows up consistently. This isn't working for me."</div><div class="script-why">Names the pattern. He can't argue with documented behavior.</div></div>
+      <div class="script-card"><button class="copy-btn" onclick="copyScript(this)">Copy</button><div class="script-sit">He's vague about his life</div><div class="script-text">"I feel like I don't really know what's going on in your world and that's starting to feel like a mismatch with what I'm looking for."</div><div class="script-why">Honest, no accusation. About compatibility, not suspicion. He opens up or confirms the mismatch.</div></div>
+      <div class="script-group-label">Calling Out the Tactic</div>
+      <div class="script-card"><button class="copy-btn" onclick="copyScript(this)">Copy</button><div class="script-sit">He brought up another woman to make you jealous</div><div class="script-text">"Noted. That sounds like something you should probably explore. I'm not interested in competing."</div><div class="script-why">Removes you from the competition entirely. No jealousy = no leverage.</div></div>
+      <div class="script-card"><button class="copy-btn" onclick="copyScript(this)">Copy</button><div class="script-sit">He negged you</div><div class="script-text">"Was that meant to be a compliment? Because it landed like a dig. I need people in my life who build me up."</div><div class="script-why">Names it without catastrophizing. One chance. If he doubles down, that's your answer.</div></div>
+      <div class="script-card"><button class="copy-btn" onclick="copyScript(this)">Copy</button><div class="script-sit">He went DARVO — reversed it on you</div><div class="script-text">"I hear that you're upset, and I want to come back to that. Right now I need to finish what I started: [restate your original point]."</div><div class="script-why">Acknowledges his feelings without abandoning your point. Persistent calm repetition is the counter to DARVO.</div></div>
+      <div class="script-group-label">Clean Exits</div>
+      <div class="script-card"><button class="copy-btn" onclick="copyScript(this)">Copy</button><div class="script-sit">Ending the situationship</div><div class="script-text">"I've been thinking and I realize I need something more defined than what we have. I'm not looking to stay in the middle. I wish you well."</div><div class="script-why">Clean, no-drama close. No invitation for negotiation.</div></div>
+      <div class="script-card"><button class="copy-btn" onclick="copyScript(this)">Copy</button><div class="script-sit">He came back after ghosting</div><div class="script-text">"Hey. I'm at a different place now and I don't think picking this back up would be good for me. I hope you're well."</div><div class="script-why">No anger, no explanation. A door that's politely closed.</div></div>
+      <div class="script-card"><button class="copy-btn" onclick="copyScript(this)">Copy</button><div class="script-sit">The no-response option (fully valid)</div><div class="script-text">[No text. Leave it on read. Block. Move on.]</div><div class="script-why">Silence is a complete sentence. You don't owe closure to someone who gave you none.</div></div>
+    </div>
+  </div>
+
+  <!-- QUIZ -->
+  <div class="section-panel" id="ps-quiz">
+    <div class="card" style="max-width:none;">
+      <div class="section-label">🧠 Test Yourself</div>
+      <div class="section-title">Player IQ Quiz</div>
+      <div class="section-desc">Five real scenarios. Can you name the tactic?</div>
+      <div class="quiz-q" id="pq-0"><div class="quiz-q-text">He texts constantly for 2 weeks — "good morning" daily, calls you "the one" before you've met his friends. Then goes cold for 3 days. Most likely tactic?</div><div class="quiz-opts"><button class="quiz-opt" onclick="answerQuiz('ps',0,0,1)">A. He genuinely fell for you and got scared</button><button class="quiz-opt" onclick="answerQuiz('ps',0,1,1)">B. Love bombing + strategic withdrawal</button><button class="quiz-opt" onclick="answerQuiz('ps',0,2,1)">C. Breadcrumbing</button><button class="quiz-opt" onclick="answerQuiz('ps',0,3,1)">D. Future faking</button></div><div class="quiz-explain" id="pe-0">✅ <strong>Love bombing + withdrawal.</strong> The intensity was never authentic — designed to create fast attachment. The withdrawal makes you chase the "good version" back. Textbook intermittent reinforcement.</div></div>
+      <div class="quiz-q" id="pq-1"><div class="quiz-q-text">You bring up that cancelling bothers you. He responds: "I can't believe you're attacking me when I've been dealing with so much. Maybe this is too much for you." What's happening?</div><div class="quiz-opts"><button class="quiz-opt" onclick="answerQuiz('ps',1,0,2)">A. He's overwhelmed</button><button class="quiz-opt" onclick="answerQuiz('ps',1,1,2)">B. Negging</button><button class="quiz-opt" onclick="answerQuiz('ps',1,2,2)">C. DARVO — he reversed victim and offender</button><button class="quiz-opt" onclick="answerQuiz('ps',1,3,2)">D. Being vulnerable</button></div><div class="quiz-explain" id="pe-1">✅ <strong>DARVO.</strong> Denied the problem, attacked your character, reversed so he's the victim. You're now comforting him about something he did. Return calmly to the original point.</div></div>
+      <div class="quiz-q" id="pq-2"><div class="quiz-q-text">Things are going great. He casually mentions his ex texted and she "clearly still has feelings." What is he doing?</div><div class="quiz-opts"><button class="quiz-opt" onclick="answerQuiz('ps',2,0,2)">A. Being transparent</button><button class="quiz-opt" onclick="answerQuiz('ps',2,1,2)">B. Seeking your advice</button><button class="quiz-opt" onclick="answerQuiz('ps',2,2,2)">C. Triangulation — manufacturing jealousy</button><button class="quiz-opt" onclick="answerQuiz('ps',2,3,2)">D. Just sharing</button></div><div class="quiz-explain" id="pe-2">✅ <strong>Triangulation.</strong> "Casually" is the key word — it's never casual. Counter: "How do you feel about that?" and change the subject.</div></div>
+      <div class="quiz-q" id="pq-3"><div class="quiz-q-text">He ghosted you for 2 weeks. No text. Then watches your story 2 minutes after every post. What is this?</div><div class="quiz-opts"><button class="quiz-opt" onclick="answerQuiz('ps',3,0,2)">A. He misses you</button><button class="quiz-opt" onclick="answerQuiz('ps',3,1,2)">B. Breadcrumbing</button><button class="quiz-opt" onclick="answerQuiz('ps',3,2,2)">C. Orbiting — presence without accountability</button><button class="quiz-opt" onclick="answerQuiz('ps',3,3,2)">D. He's about to text</button></div><div class="quiz-explain" id="pe-3">✅ <strong>Orbiting.</strong> Gone from your actual life, in your digital space. Keeps him in your awareness with zero effort. Restrict or soft block.</div></div>
+      <div class="quiz-q" id="pq-4"><div class="quiz-q-text">Four months in. He talks about your future constantly but you've never met his friends and aren't on his social media. He says he's "private." Read?</div><div class="quiz-opts"><button class="quiz-opt" onclick="answerQuiz('ps',4,0,1)">A. He's genuinely private</button><button class="quiz-opt" onclick="answerQuiz('ps',4,1,1)">B. Future faking + soft-launch limbo</button><button class="quiz-opt" onclick="answerQuiz('ps',4,2,1)">C. Moving at his own pace</button><button class="quiz-opt" onclick="answerQuiz('ps',4,3,1)">D. Protecting you from drama</button></div><div class="quiz-explain" id="pe-4">✅ <strong>Future faking + soft-launch limbo.</strong> Future talk creates emotional investment. Four months with no social integration is not privacy — it's containment.</div></div>
+      <div id="psQuizResult" style="display:none;margin-top:1rem;text-align:center;padding:1.4rem;background:var(--blush);border-radius:16px;border:1px solid var(--border-md);">
+        <div style="font-size:1.8rem;margin-bottom:6px;" id="psQuizEmoji"></div>
+        <div style="font-family:'Cormorant Garamond',serif;font-size:1.3rem;font-weight:700;margin-bottom:5px;" id="psQuizScore"></div>
+        <div style="font-size:13.5px;color:var(--text-mid);" id="psQuizMsg"></div>
+        <button onclick="resetQuiz('ps')" style="margin-top:.75rem;padding:9px 22px;background:var(--rose);color:white;border:none;border-radius:99px;font-weight:700;cursor:pointer;font-size:13.5px;">Retake Quiz</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- PS AI -->
+  <div class="section-panel" id="ps-psai">
+    <div class="card" style="max-width:none;">
+      <div class="section-label">✨ AI Powered</div>
+      <div class="section-title">Player Behavior Analyzer</div>
+      <div class="section-desc">Paste his text or describe what he did. Get tactics named, risk rated, and exact words to say.</div>
+      <div style="position:relative;">
+        <textarea id="psInput" maxlength="800"
+          placeholder="e.g. 'He was amazing for 2 weeks then went cold. Now he's watching my stories but not texting. Last night he texted at 1am asking to come over.'"
+          oninput="document.getElementById('psChar').textContent=this.value.length+' / 800'"></textarea>
+        <span class="char-count" id="psChar">0 / 800</span>
+      </div>
+      <button class="main-btn wide" id="psBtn" onclick="analyzePlayer()" style="margin-top:.75rem;">Analyze Him →</button>
+      <div class="ai-result" id="psResult">
+        <div class="verdict-banner" id="psBanner"><span class="verdict-emoji" id="psEmoji"></span><div class="verdict-label" id="psLabel"></div><div class="verdict-text" id="psVerdictText"></div></div>
+        <div class="analysis-grid">
+          <div class="analysis-block"><div class="analysis-block-label">🎭 Tactics Spotted</div><div class="detected-flags" id="psTactics"></div></div>
+          <div class="analysis-block"><div class="analysis-block-label">⚠️ Risk Level</div><p id="psRisk"></p></div>
+          <div class="analysis-block"><div class="analysis-block-label">🧠 What He Actually Wants</div><p id="psWants"></p></div>
+          <div class="analysis-block"><div class="analysis-block-label">💡 What You Should Know</div><p id="psKnow"></p></div>
+        </div>
+        <div class="card" style="max-width:none;margin-bottom:0;padding:1.4rem;"><div class="section-label">💬 Your Move</div><div id="psMoves"></div></div>
+        <div class="ai-bottom"><div class="ai-bottom-text" id="psBottom"></div></div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ══════════════════════════════════════
+     TAB: GOOD GUY DETECTOR
+══════════════════════════════════════ -->
+<div class="tab-panel" id="tab-goodguy">
+<div style="max-width:720px;margin:0 auto;padding:2rem 1.25rem 4rem;">
+  <div class="hero" style="padding:3rem 0 2rem;">
+    <div class="hero-badge">🌟 Because good ones exist too.</div>
+    <h1 style="font-family:'Cormorant Garamond',serif;font-size:clamp(2.2rem,5vw,3.4rem);font-weight:700;line-height:1.1;letter-spacing:-.02em;margin-bottom:.8rem;">Good Guy <em style="color:var(--green);font-style:italic;">Detector</em></h1>
+    <p style="font-size:15px;line-height:1.75;color:var(--text-mid);max-width:460px;margin:0 auto;">Anxious attachment can make a healthy man feel boring. This helps you recognize the real thing — and respond in a way that keeps it good.</p>
+  </div>
+  <div class="card">
+    <div class="section-label">Tell Me About Him</div>
+    <div style="position:relative;">
+      <textarea id="goodGuyInput" maxlength="600"
+        placeholder="Describe how he acts, what he says, how he shows up… e.g. 'He texts consistently, follows through on plans, checks in when I'm stressed, doesn't make me feel crazy for having feelings.'"
+        oninput="document.getElementById('ggChar').textContent=this.value.length+' / 600'"></textarea>
+      <span class="char-count" id="ggChar">0 / 600</span>
+    </div>
+    <button class="main-btn wide green-btn" id="ggBtn" onclick="runGoodGuyAI()" style="margin-top:.75rem;">Scan for Good Guy Energy →</button>
+  </div>
+  <div class="ai-result" id="ggResult">
+    <div class="out-section">
+      <div class="out-tag">🌟 The Verdict</div>
+      <p class="decode-text" id="ggVerdict"></p>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;">
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:1.1rem;">
+        <div style="font-size:10px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--green);margin-bottom:8px;">✅ Green Flags Spotted</div>
+        <div id="ggGreenFlags"></div>
+      </div>
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:1.1rem;">
+        <div style="font-size:10px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--amber);margin-bottom:8px;">👀 Watch Points</div>
+        <div id="ggWatchPoints"></div>
+      </div>
+    </div>
+    <div class="out-section">
+      <div class="out-tag">💬 How to Show Up Well With Him</div>
+      <div id="ggResponses"></div>
+    </div>
+    <div class="bottom-line" id="ggBottomLine" style="background:linear-gradient(135deg,#EAF5ED,#F1FAF3);border-left-color:var(--green);color:#1B5E20;"></div>
+    <div class="action-row">
+      <button class="act-btn act-btn-ghost" onclick="document.getElementById('ggResult').classList.remove('visible');document.getElementById('goodGuyInput').value='';document.getElementById('ggChar').textContent='0 / 600'">↩ Scan Again</button>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ══════════════════════════════════════
+     TAB: ATTACHMENT + LOVE LANGUAGES
+══════════════════════════════════════ -->
+<div class="tab-panel" id="tab-attachment">
+<div style="max-width:720px;margin:0 auto;padding:2rem 1.25rem 4rem;">
+  <div class="hero" style="padding:3rem 0 2rem;">
+    <div class="hero-badge">❤️ Understanding is power.</div>
+    <h1 style="font-family:'Cormorant Garamond',serif;font-size:clamp(2.2rem,5vw,3.4rem);font-weight:700;line-height:1.1;letter-spacing:-.02em;margin-bottom:.8rem;"><em style="color:var(--rose);font-style:italic;">Attachment</em> & Love</h1>
+    <p style="font-size:15px;line-height:1.75;color:var(--text-mid);max-width:460px;margin:0 auto;">How you love, how you fight, why you're drawn to who you're drawn to — and what to do about it.</p>
+  </div>
+
+  <div class="sub-nav">
+    <button class="sub-tab active" onclick="showSub('att','styles',this)">🪢 Styles</button>
+    <button class="sub-tab" onclick="showSub('att','trap',this)">🔁 The Trap</button>
+    <button class="sub-tab" onclick="showSub('att','lovelang',this)">💝 Love Languages</button>
+    <button class="sub-tab" onclick="showSub('att','healing',this)">🌱 Healing</button>
+  </div>
+
+  <!-- ATTACHMENT STYLES -->
+  <div class="section-panel active" id="att-styles">
+    <div class="card">
+      <div class="section-label">🪢 The Four Styles</div>
+      <div class="section-title">Attachment Theory</div>
+      <div class="section-desc">Your attachment style is how your nervous system learned to do relationships. It's not fixed — but you have to know it to change it.</div>
+      <div class="att-tabs">
+        <button class="att-tab active" onclick="showAtt('secure',this)">🟢 Secure</button>
+        <button class="att-tab" onclick="showAtt('anxious',this)">🌀 Anxious</button>
+        <button class="att-tab" onclick="showAtt('dismissive',this)">🧊 Dismissive</button>
+        <button class="att-tab" onclick="showAtt('fearful',this)">😰 Fearful</button>
+      </div>
+      <div class="att-panel active" id="att-secure">
+        <div style="background:#EAF5ED;border:1px solid #8FC9A0;border-radius:14px;padding:1.25rem;margin-bottom:1rem;">
+          <div style="font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--green);margin-bottom:6px;">🟢 Secure Attachment</div>
+          <p style="font-size:14px;color:#1B5E20;line-height:1.7;">Comfortable with intimacy and independence. Can communicate needs directly. Doesn't panic when partner needs space. Doesn't shut down when emotions get big. This is the goal — not a personality type you're born with.</p>
+        </div>
+        <div class="rf-grid">
+          <div class="rf-item"><div class="rf-name" style="margin-bottom:4px;">What it looks like</div><div class="rf-body">Consistent behavior, can repair after conflict, comfortable being needed and needing, doesn't keep score.</div></div>
+          <div class="rf-item"><div class="rf-name" style="margin-bottom:4px;">In conflict</div><div class="rf-body">Stays regulated, names feelings, hears the other person's point, seeks resolution not victory.</div></div>
+          <div class="rf-item"><div class="rf-name" style="margin-bottom:4px;">With distance</div><div class="rf-body">Comfortable with independence. Doesn't read absence as abandonment or closeness as suffocation.</div></div>
+          <div class="rf-item"><div class="rf-name" style="margin-bottom:4px;">How to get here</div><div class="rf-body">Therapy, self-regulation work, choosing partners who expand your window of tolerance instead of triggering it.</div></div>
+        </div>
+      </div>
+      <div class="att-panel" id="att-anxious">
+        <div style="background:var(--blush-deep);border:1px solid var(--border-str);border-radius:14px;padding:1.25rem;margin-bottom:1rem;">
+          <div style="font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--rose-deep);margin-bottom:6px;">🌀 Anxious Attachment</div>
+          <p style="font-size:14px;color:var(--rose-deep);line-height:1.7;">Needs closeness to feel safe. His distance activates panic. Often mistakes intensity (anxiety, obsession, longing) for love. Drawn to unavailable people because they keep the attachment system activated.</p>
+        </div>
+        <div class="rf-grid">
+          <div class="rf-item"><div class="rf-name" style="margin-bottom:4px;">Protest behaviors</div><div class="rf-body">Excessive texting, picking fights, becoming clingy, withdrawing to test if he'll chase. Activated attachment signals — not manipulation, but they function similarly.</div></div>
+          <div class="rf-item"><div class="rf-name" style="margin-bottom:4px;">Hypervigilance</div><div class="rf-body">Reads deeply into response times, tone, punctuation. Threat detector is always on. Exhausting for both people.</div></div>
+          <div class="rf-item"><div class="rf-name" style="margin-bottom:4px;">The trap</div><div class="rf-body">Secure partners feel "boring." Avoidants feel magnetic. Activation ≠ attraction. This distinction can change everything.</div></div>
+          <div class="rf-item"><div class="rf-name" style="margin-bottom:4px;">If this is you</div><div class="rf-body">Recognizing it is power. Therapy + self-regulation + choosing available partners shifts this over time. You are not broken — you're activated.</div></div>
+        </div>
+      </div>
+      <div class="att-panel" id="att-dismissive">
+        <div style="background:var(--blush);border:1px solid var(--border-md);border-radius:14px;padding:1.25rem;margin-bottom:1rem;">
+          <div style="font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--text-mid);margin-bottom:6px;">🧊 Dismissive Avoidant</div>
+          <p style="font-size:14px;color:var(--text-mid);line-height:1.7;">Needs distance to feel safe. Closeness triggers their deactivation system — the better it gets, the more they need to create space. Hyper-independence as a survival strategy learned early.</p>
+        </div>
+        <div class="rf-grid">
+          <div class="rf-item"><div class="rf-name" style="margin-bottom:4px;">Deactivation after closeness</div><div class="rf-body">Great connection → sudden pullback. Not personal to you — depth literally triggers their nervous system's retreat response.</div></div>
+          <div class="rf-item"><div class="rf-name" style="margin-bottom:4px;">"Your needs are too much"</div><div class="rf-body">Normal needs for consistency or emotional presence get labeled needy. You shrink yourself to avoid triggering their discomfort.</div></div>
+          <div class="rf-item"><div class="rf-name" style="margin-bottom:4px;">Can they heal?</div><div class="rf-body">Yes — but only with significant self-awareness and active work. Without therapy, you will do all the emotional bridging. That's not partnership.</div></div>
+          <div class="rf-item"><div class="rf-name" style="margin-bottom:4px;">What you should know</div><div class="rf-body">You cannot love someone out of dismissive avoidance. It requires their own internal work, not your extra effort or patience.</div></div>
+        </div>
+      </div>
+      <div class="att-panel" id="att-fearful">
+        <div style="background:var(--blush-deep);border:1px solid var(--border-str);border-radius:14px;padding:1.25rem;margin-bottom:1rem;">
+          <div style="font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--rose-deep);margin-bottom:6px;">😰 Fearful Avoidant</div>
+          <p style="font-size:14px;color:var(--rose-deep);line-height:1.7;">Wants closeness desperately AND is terrified of it. Rooted in relational trauma. Gets close → panics → pulls away → misses you → repeats. The most volatile and confusing pattern to be in a relationship with.</p>
+        </div>
+        <div class="rf-grid">
+          <div class="rf-item"><div class="rf-name" style="margin-bottom:4px;">Push-pull that never stabilizes</div><div class="rf-body">Unlike DA, they want the connection. They just can't tolerate it. The cycle runs until one person does serious healing work.</div></div>
+          <div class="rf-item"><div class="rf-name" style="margin-bottom:4px;">Sabotage at peak connection</div><div class="rf-body">Things are the best they've been → they pick a fight or disappear. Good moments are as threatening as bad ones. Bracing for abandonment by leaving first.</div></div>
+          <div class="rf-item"><div class="rf-name" style="margin-bottom:4px;">Emotional volatility</div><div class="rf-body">Big emotional swings disproportionate to the trigger. Their nervous system is genuinely dysregulated — deeply loving and frightening in the same week.</div></div>
+          <div class="rf-item"><div class="rf-name" style="margin-bottom:4px;">Hard truth</div><div class="rf-body">FA attachment is rooted in relational trauma. Love is not enough to rewire a nervous system. This requires professional support and sustained commitment from them.</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- THE TRAP -->
+  <div class="section-panel" id="att-trap">
+    <div class="card">
+      <div class="section-label">🔁 The Most Common Painful Pattern</div>
+      <div class="section-title">The Anxious-Avoidant Trap</div>
+      <div class="section-desc">Why the most painful combinations are also the most magnetic — and how to get out.</div>
+      <div style="display:grid;grid-template-columns:1fr auto 1fr;gap:1rem;align-items:center;margin-bottom:1.25rem;">
+        <div style="background:var(--blush-deep);border-radius:14px;padding:1.1rem;text-align:center;border:1px solid var(--border-md);">
+          <div style="font-size:1.4rem;margin-bottom:5px;">🌀</div>
+          <div style="font-weight:800;font-size:13.5px;margin-bottom:5px;">Anxious</div>
+          <div style="font-size:12px;color:var(--text-mid);line-height:1.5;">Needs closeness to feel safe. Distance activates panic. Pursues harder when he pulls back.</div>
+        </div>
+        <div style="font-size:1.4rem;color:var(--rose);font-weight:800;text-align:center;">⚡</div>
+        <div style="background:var(--blush);border-radius:14px;padding:1.1rem;text-align:center;border:1px solid var(--border-md);">
+          <div style="font-size:1.4rem;margin-bottom:5px;">🧊</div>
+          <div style="font-weight:800;font-size:13.5px;margin-bottom:5px;">Avoidant</div>
+          <div style="font-size:12px;color:var(--text-mid);line-height:1.5;">Needs distance to feel safe. Pursuit activates suffocation. Withdraws harder when she chases.</div>
+        </div>
+      </div>
+      <div class="rf-item" style="margin-bottom:8px;"><div class="rf-name" style="margin-bottom:4px;">🎢 Why It's So Addictive</div><div class="rf-body">The avoidant's unavailability activates the anxious person's attachment system at full intensity. Anxious people often mistake activation (anxiety, obsession, longing) for love. Intensity is not proof of depth — it's proof of unsafety.</div></div>
+      <div class="rf-item" style="margin-bottom:8px;"><div class="rf-name" style="margin-bottom:4px;">🔓 Breaking the Cycle</div><div class="rf-body">The anxious person must stop pursuing. The avoidant must stop withdrawing. Neither can do it by willpower alone — both need to understand their nervous system responses and actively work against them.</div></div>
+      <div style="margin-top:.75rem;padding:1rem 1.25rem;background:var(--blush-deep);border-left:3px solid var(--rose);border-radius:0 12px 12px 0;font-size:13.5px;color:var(--text-mid);line-height:1.65;"><strong>The question to ask yourself:</strong> Is what I'm feeling love — or is it the relief of his attention after the anxiety of his absence? Those are two very different things.</div>
+    </div>
+  </div>
+
+  <!-- LOVE LANGUAGES -->
+  <div class="section-panel" id="att-lovelang">
+    <div class="card">
+      <div class="section-label">💝 Gary Chapman's Research</div>
+      <div class="section-title">Love Language Compatibility</div>
+      <div class="section-desc">Mismatched love languages don't doom a relationship — they just require translation. See where you two land.</div>
+      <div style="margin-bottom:1rem;">
+        <div style="font-size:12.5px;font-weight:700;color:var(--text-mid);margin-bottom:6px;">Your Primary Love Language</div>
+        <select class="love-lang-select" id="yourLang">
+          <option value="Words">💬 Words of Affirmation — you need to hear it</option>
+          <option value="Acts">🛠️ Acts of Service — actions mean more than words</option>
+          <option value="Gifts">🎁 Receiving Gifts — thoughtful gestures matter deeply</option>
+          <option value="Time">⏰ Quality Time — undivided attention is the currency</option>
+          <option value="Touch">🤝 Physical Touch — presence and contact ground you</option>
+        </select>
+      </div>
+      <div style="margin-bottom:1.25rem;">
+        <div style="font-size:12.5px;font-weight:700;color:var(--text-mid);margin-bottom:6px;">His Apparent Love Language (based on how he shows up)</div>
+        <select class="love-lang-select" id="hisLang">
+          <option value="Words">💬 Words of Affirmation</option>
+          <option value="Acts">🛠️ Acts of Service</option>
+          <option value="Gifts">🎁 Receiving Gifts</option>
+          <option value="Time">⏰ Quality Time</option>
+          <option value="Touch">🤝 Physical Touch</option>
+        </select>
+      </div>
+      <button class="main-btn wide" onclick="assessLoveLang()">Assess Compatibility →</button>
+      <div id="loveResult" style="margin-top:1.25rem;display:none;animation:fadeUp .35s ease both;">
+        <div class="compat-score"><div class="compat-number" id="loveScore"></div><div class="compat-label" id="loveScoreLabel"></div></div>
+        <div class="out-section"><div class="out-tag">🔍 What This Means</div><p id="loveInsight" style="font-size:14.5px;line-height:1.75;color:var(--text);"></p></div>
+        <div class="script-card" style="margin-bottom:8px;"><div class="script-sit">Script to bridge the gap</div><div class="script-text" id="loveScript"></div></div>
+        <div class="out-section"><div class="out-tag">💡 Pro Tips for Your Combination</div><p id="loveTips" style="font-size:13.5px;color:var(--text-mid);line-height:1.7;"></p></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- HEALING -->
+  <div class="section-panel" id="att-healing">
+    <div class="card">
+      <div class="section-label">🌱 Active Work</div>
+      <div class="section-title">Secure Attachment Healing</div>
+      <div class="section-desc">Attachment style is not destiny. These are concrete practices that move the needle — not overnight, but measurably.</div>
+      <div class="rf-grid">
+        <div class="rf-item"><div class="rf-icon" style="font-size:1.3rem;margin-bottom:6px;">🧘</div><div class="rf-name" style="margin-bottom:4px;">Regulate Before You Respond</div><div class="rf-body">When triggered, pause 90 seconds. The neurochemical spike of an emotional trigger lasts ~90 seconds. If you act in that window, you're reacting. After it, you're choosing.</div></div>
+        <div class="rf-item"><div class="rf-icon" style="font-size:1.3rem;margin-bottom:6px;">📓</div><div class="rf-name" style="margin-bottom:4px;">Track Your Triggers</div><div class="rf-body">Write down what activated you, when, and what story you told yourself about it. Patterns emerge fast. You can't rewire what you can't name.</div></div>
+        <div class="rf-item"><div class="rf-icon" style="font-size:1.3rem;margin-bottom:6px;">🗣️</div><div class="rf-name" style="margin-bottom:4px;">Name Needs Directly</div><div class="rf-body">Instead of protest behaviors (withdrawing, texting 10 times), try: "I'm feeling disconnected and I could use some reassurance." Direct needs are disarming.</div></div>
+        <div class="rf-item"><div class="rf-icon" style="font-size:1.3rem;margin-bottom:6px;">🪞</div><div class="rf-name" style="margin-bottom:4px;">Notice the Felt Sense</div><div class="rf-body">Security doesn't feel like butterflies — it often feels unfamiliar at first. Calm, ease, and consistency may feel "boring" if you're used to activated attachment. That's the healing indicator.</div></div>
+        <div class="rf-item"><div class="rf-icon" style="font-size:1.3rem;margin-bottom:6px;">🤝</div><div class="rf-name" style="margin-bottom:4px;">Practice Repair</div><div class="rf-body">After conflict, initiate repair — not to win or be right, but to restore connection. "I don't like how that went. Can we try again?" is a complete repair attempt.</div></div>
+        <div class="rf-item"><div class="rf-icon" style="font-size:1.3rem;margin-bottom:6px;">🛑</div><div class="rf-name" style="margin-bottom:4px;">Choose Partners Who Expand You</div><div class="rf-body">You cannot heal anxious or avoidant patterns in a relationship that constantly activates them. A more secure partner is not boring — they're the environment your nervous system needs.</div></div>
+      </div>
+      <div style="margin-top:1rem;padding:1.1rem 1.4rem;background:#EAF5ED;border-radius:14px;border:1px solid #8FC9A0;">
+        <div style="font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--green);margin-bottom:6px;">Recommended Resources</div>
+        <p style="font-size:13.5px;color:#1B5E20;line-height:1.7;"><strong>Books:</strong> Attached (Levine & Heller) · Hold Me Tight (Sue Johnson) · The Body Keeps the Score (van der Kolk)<br><strong>Therapy modalities:</strong> EMDR, Somatic Experiencing, IFS, EFT couples therapy<br><strong>Practice:</strong> Any consistent mindfulness practice that builds interoceptive awareness</p>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ══════════════════════════════════════
+     TAB: GAYDAR
+══════════════════════════════════════ -->
+<div class="tab-panel" id="tab-gaydar">
+<div style="max-width:720px;margin:0 auto;padding:2rem 1.25rem 4rem;">
+  <div class="hero" style="padding:3rem 0 2rem;">
+    <div class="hero-badge" style="background:linear-gradient(135deg,#F3E5F5,#E8D5F5);border-color:#CE93D8;color:var(--purple);">🌈 Clarity first. Always.</div>
+    <h1 style="font-family:'Cormorant Garamond',serif;font-size:clamp(2.2rem,5vw,3.4rem);font-weight:700;line-height:1.1;letter-spacing:-.02em;margin-bottom:.8rem;"><em style="color:var(--purple-l);font-style:italic;">Gaydar</em> Simulator</h1>
+    <p style="font-size:15px;line-height:1.75;color:var(--text-mid);max-width:460px;margin:0 auto;">Something feels off but you can't name it. Describe his behavior and get a read — with real signals, not stereotypes.</p>
+  </div>
+  <div class="card">
+    <div class="section-label">Tell Me the Situation</div>
+    <div style="position:relative;">
+      <textarea id="gaydarInput" maxlength="600"
+        placeholder="Paste his messages or describe his behavior… e.g. 'He's incredibly warm and affectionate with me but has never tried to kiss me. He compliments my appearance but it always feels platonic. We've hung out 6 times and nothing has happened.'"
+        oninput="document.getElementById('gdChar').textContent=this.value.length+' / 600'"></textarea>
+      <span class="char-count" id="gdChar">0 / 600</span>
+    </div>
+    <button class="main-btn wide purple-btn" id="gdBtn" onclick="runGaydarAI()" style="margin-top:.75rem;">Activate Gaydar →</button>
+  </div>
+
+  <div class="ai-result" id="gdResult">
+    <div id="gdBanner" style="border-radius:18px;padding:1.5rem;margin-bottom:1rem;text-align:center;border:2px solid;">
+      <span style="font-size:2.2rem;display:block;margin-bottom:6px;" id="gdEmoji"></span>
+      <div style="font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;margin-bottom:5px;" id="gdLabel"></div>
+      <div style="font-family:'Cormorant Garamond',serif;font-size:1.15rem;font-style:italic;line-height:1.5;color:var(--text);" id="gdVerdictText"></div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:1rem;">
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:1.1rem;">
+        <div style="font-size:10px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--purple-l);margin-bottom:8px;">🌈 Signals Read</div>
+        <div id="gdSignals"></div>
+      </div>
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:1.1rem;">
+        <div style="font-size:10px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--text-mid);margin-bottom:8px;">🔍 Alternative Reads</div>
+        <div id="gdAlternatives"></div>
+      </div>
+    </div>
+    <div class="out-section">
+      <div class="out-tag">💬 How to Get Clarity (Without Making It Weird)</div>
+      <div id="gdMoves"></div>
+    </div>
+    <div style="margin-top:.75rem;padding:1.1rem 1.4rem;background:linear-gradient(135deg,#F3E5F5,#E8D5F5);border-left:4px solid var(--purple-l);border-radius:0 14px 14px 0;">
+      <div style="font-family:'Cormorant Garamond',serif;font-style:italic;font-size:1.05rem;color:var(--purple);line-height:1.5;" id="gdBottom"></div>
+    </div>
+    <div class="action-row" style="margin-top:.75rem;">
+      <button class="act-btn act-btn-ghost" onclick="document.getElementById('gdResult').classList.remove('visible');document.getElementById('gaydarInput').value='';document.getElementById('gdChar').textContent='0 / 600'">↩ New Scan</button>
+    </div>
+  </div>
+</div>
+</div>
+
+<footer>Made with 💋 · Girl Talk • Real Talk · Always in your corner</footer>
+
+<!-- ══════════════════════════════════════
+     JAVASCRIPT
+══════════════════════════════════════ -->
+<script>
+// ─── STATE ───
+let activePill = '📱 He texted';
+let activeTone = 'brutal';
+let lastResult = null;
+let lastSituation = '';
+const communityPosts = JSON.parse(localStorage.getItem('gt-community') || '[]');
+function saveCommunity() {
+  try { localStorage.setItem('gt-community', JSON.stringify(communityPosts.slice(0, 50))); } catch (_) {}
+}
+const psAnswered = {};
+let psScore = 0;
+
+// ─── AI CONFIG ───
+// The AI features call Claude through a server-side proxy (api/chat.js) that
+// holds the API key AND the prompts. The browser only sends a feature name and
+// the user's text — see README.md for deployment.
+const GT_CONFIG = {
+  proxyUrl:    '/api/chat',     // server-side proxy (api/chat.js)
+  proxySecret: ''               // optional: must match PROXY_SECRET on the proxy
+};
+
+// Single entry point for every AI feature. Sends a feature + the user's text to
+// the proxy and returns the parsed result object Claude produced.
+async function askGirlTalk(feature, input, opts = {}) {
+  // DEMO BUILD — returns sample data offline so the whole experience is viewable
+  // without a backend. The real, fetch-based version lives in index.html.
+  await new Promise(r => setTimeout(r, 650 + Math.random() * 500));
+  const D = {
+    decode: {
+      decode: "Girl… the “maybe” and the 11pm timing tell the story. He likes the attention but he's keeping his options open. You're a comfortable backup plan he reaches for when he's bored — not a priority he's making room for.",
+      probs: [
+        { label: "🔴 Keeping you on the bench", pct: 55, color: "red" },
+        { label: "🟡 Genuinely busy, bad at texting", pct: 30, color: "amber" },
+        { label: "🟢 Actually into you, nervous", pct: 15, color: "green" }
+      ],
+      flags: ["Breadcrumbing", "Late-night-only contact"],
+      flagText: "Consistent low-effort contact that spikes at night is a classic keep-warm pattern — enough to keep you interested, never enough to count on.",
+      options: [
+        { label: "Option A — The Unbothered Queen", text: "“Hey, I'm looking for something a bit more consistent than this. No hard feelings if that's not your thing.”" },
+        { label: "Option B — The Direct Ask", text: "“I like talking to you, but I want to know where your head's at. Are you actually looking to date, or just keeping it casual?”" },
+        { label: "Option C — The Mic Drop", text: "“I deserve someone who texts me at noon, not just after midnight. Let me know when you're ready for that.”" },
+        { label: "Option D — The Silence", text: "Stop initiating for a week. His effort when you go quiet tells you everything you need to know." }
+      ],
+      bottomLine: "You're not hard to love — he's just not reaching. Stop auditioning for a part he already cast you out of."
+    },
+    redflags: {
+      verdict: "caution", verdictEmoji: "⚠️",
+      verdictText: "There are real warning signs here — the jealousy and the phone-checking aren't ‘caring,’ they're early control.",
+      flags: ["Monitoring behavior", "Isolation from friends", "Guilt-tripping"],
+      patternType: "This reads as early-stage coercive control — small boundary tests that escalate if they go unchallenged.",
+      projection: "Left unaddressed, monitoring usually widens (who you see, what you wear, where you go) rather than fading on its own.",
+      whatSheShould: "Affection and surveillance are not the same thing. Someone who trusts you doesn't need to check.",
+      moves: [
+        { label: "Option A — Name it calmly", text: "“Going through my phone isn't okay with me. I need to be trusted, and I need my friendships respected.”" },
+        { label: "Option B — Hold the boundary", text: "“I'm not cutting people off. If that's a dealbreaker for you, I'd rather know now.”" },
+        { label: "Option C — Reality check", text: "Talk to one friend you trust this week and tell them what's been happening. Outside eyes matter." }
+      ],
+      bottomLine: "Trust your gut — the discomfort you're feeling is information, not overreaction."
+    },
+    player: {
+      verdict: "danger", verdictEmoji: "🚨",
+      verdictText: "This is a textbook keep-her-guessing operation — the warmth runs hot and cold on purpose.",
+      tactics: ["Love Bombing", "Breadcrumbing", "Intermittent Reinforcement", "Future Faking"],
+      riskLevel: "High — the unpredictability is the strategy, and it's designed to keep you chasing.",
+      whatHeWants: "Maximum attention from you for minimum commitment from him — the situationship that never has to become anything.",
+      whatSheShould: "The intensity at the start wasn't love, it was a hook. Real interest is consistent, not a rollercoaster.",
+      moves: [
+        { label: "Option A — Stop reacting", text: "“I'm not available for hot-and-cold. Reach out when you actually want to make plans and keep them.”" },
+        { label: "Option B — Match his effort", text: "Mirror exactly what he gives you — no more chasing, no more filling the silence. Watch what's left." },
+        { label: "Option C — The clean exit", text: "“This isn't what I want. Take care of yourself.” Then mute, and mean it." }
+      ],
+      bottomLine: "You're not too much. He's just counting on you to keep settling for less. Don't."
+    },
+    goodguy: {
+      verdict: "Girl, this one's showing up like someone who actually wants to build something — the consistency is the green flag.",
+      greenFlags: ["Texts back when he says he will — reliability you can plan around", "Asks about your day and remembers the details", "Respects a ‘no’ the first time, no sulking"],
+      watchPoints: ["He gets quiet when stressed — keep an eye on whether he opens up over time", "Still a little guarded about the future — normal early, worth revisiting"],
+      responses: [
+        { label: "How to show up", text: "“I really appreciate how consistent you are — it makes me feel safe with you.” Name the good thing out loud; it compounds." },
+        { label: "How to build on this", text: "Be just as reliable back. Healthy dynamics are built on matched effort, not scorekeeping." },
+        { label: "What to watch for", text: "Notice whether he stays this steady when life gets hard — that's where the real answer lives." }
+      ],
+      bottomLine: "You're not settling — you're finally being met. Let yourself enjoy it."
+    },
+    gaydar: {
+      verdict: "unclear", verdictEmoji: "🤔", verdictLabel: "Genuinely mixed signals",
+      verdictText: "Honestly? What you described could go a few ways — there isn't a clean read here, and that's okay.",
+      signals: ["Lots of emotional closeness without a clear romantic move", "Avoids labeling what you two are", "Warm one day, distant the next"],
+      alternatives: ["He could be questioning and not ready to say so", "He could be straight but emotionally unavailable or scared", "He could be into you and genuinely terrible at showing it"],
+      moves: [
+        { label: "Approach A — Soft and curious", text: "“I've loved getting close to you — I'm just not sure what we are. What feels true for you?”" },
+        { label: "Approach B — Lower the stakes", text: "Make it easy to be honest: “No wrong answer here, I just don't want to assume.”" },
+        { label: "Approach C — Direct", text: "“Are you interested in me romantically? I'd rather just know.” Clarity is a kindness to yourself." }
+      ],
+      bottomLine: "Whatever the answer, you deserve someone who's sure about you. Asking isn't pushy — it's self-respect."
+    }
+  };
+  return D[feature];
+}
+
+// ─── THEME ───
+function toggleTheme() {
+  const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+  document.documentElement.setAttribute('data-theme', isDark ? 'light' : 'dark');
+  document.getElementById('themeBtn').textContent = isDark ? '🌙' : '☀️';
+  localStorage.setItem('gt-theme', isDark ? 'light' : 'dark');
+}
+(function(){
+  if (localStorage.getItem('gt-theme') === 'dark') {
+    document.documentElement.setAttribute('data-theme', 'dark');
+    document.getElementById('themeBtn').textContent = '☀️';
+  }
+})();
+
+// ─── TOAST ───
+function showToast(msg, d) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), d || 2800);
+}
+
+// ─── SAFETY ───
+function toggleSafety() {
+  const o = document.getElementById('safetyOverlay');
+  o.classList.toggle('open');
+  document.getElementById('safetyFab').classList.remove('pulse');
+}
+// Called when an AI verdict suggests the user may be unsafe — gently surfaces help.
+function flagDanger(verdict) {
+  if (verdict !== 'danger') return;
+  const fab = document.getElementById('safetyFab');
+  fab.classList.remove('pulse'); void fab.offsetWidth; fab.classList.add('pulse');
+  showToast('If you feel unsafe, tap 🛟 Get help for support.', 5000);
+}
+
+// ─── NAV TABS ───
+function switchTab(name, btn) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + name).classList.add('active');
+  if (btn) btn.classList.add('active');
+  if (name === 'community') renderCommunity();
+}
+
+// ─── SUB-NAVS ───
+function showSub(prefix, name, btn) {
+  const panels = document.querySelectorAll(`[id^="${prefix}-"]`);
+  panels.forEach(p => p.classList.remove('active'));
+  document.getElementById(prefix + '-' + name).classList.add('active');
+  if (btn) {
+    btn.closest('.sub-nav').querySelectorAll('.sub-tab').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+  }
+}
+
+// ─── ATTACHMENT STYLE TABS ───
+function showAtt(name, btn) {
+  document.querySelectorAll('.att-panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('att-' + name).classList.add('active');
+  if (btn) {
+    btn.closest('.att-tabs').querySelectorAll('.att-tab').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+  }
+}
+
+// ─── DECODE ───
+function selectPill(el) {
+  document.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
+  el.classList.add('active'); activePill = el.textContent.trim();
+}
+function selectTone(el) {
+  document.querySelectorAll('.tone-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active'); activeTone = el.dataset.tone;
+}
+function updateCC() {
+  document.getElementById('charCount').textContent = document.getElementById('situationInput').value.length + ' / 600';
+}
+function resetDecode() {
+  document.getElementById('output').classList.remove('visible');
+  document.getElementById('situationInput').value = ''; updateCC();
+  document.getElementById('inputCard').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+async function decodeWithAI() {
+  const input = document.getElementById('situationInput').value.trim();
+  if (!input) {
+    const ta = document.getElementById('situationInput');
+    ta.style.borderColor = 'var(--red)'; ta.focus();
+    setTimeout(() => ta.style.borderColor = '', 2000); return;
+  }
+  const btn = document.getElementById('decodeBtn');
+  btn.disabled = true;
+  btn.innerHTML = 'Reading him <span class="dots"><span></span><span></span><span></span></span>';
+  lastSituation = input; lastResult = null;
+
+  try {
+    const r = await askGirlTalk('decode', input, { tone: activeTone, pill: activePill });
+    lastResult = r; renderDecodeOutput(r);
+  } catch(err) {
+    document.getElementById('decodeText').textContent = "Couldn't decode — " + err.message;
+    document.getElementById('flagSection').style.display = 'none';
+    document.getElementById('output').classList.add('visible');
+  } finally {
+    btn.disabled = false; btn.innerHTML = 'Decode It →';
+  }
+}
+
+const colorMap = {red:'var(--red)',amber:'var(--amber)',green:'var(--green)'};
+function renderDecodeOutput(r) {
+  document.getElementById('decodeText').textContent = r.decode || '';
+  document.getElementById('probRows').innerHTML = (r.probs||[]).map(p =>
+    `<div class="prob-row"><span class="prob-label">${esc(p.label)}</span><span class="prob-pct">${p.pct}%</span><div class="prob-track"><div class="prob-fill" style="width:${p.pct}%;background:${colorMap[p.color]||'var(--rose)'}"></div></div></div>`
+  ).join('');
+  const flags = r.flags||[];
+  const fs = document.getElementById('flagSection');
+  if (!flags.length && !r.flagText) { fs.style.display='none'; } else {
+    fs.style.display='';
+    document.getElementById('flagChipsWrap').innerHTML = flags.map(f=>`<span class="flag-chip">🚩 ${esc(f)}</span>`).join('');
+    document.getElementById('flagTextEl').textContent = r.flagText||'';
+  }
+  document.getElementById('optionsList').innerHTML = (r.options||[]).map(o =>
+    `<div class="option-card"><div class="option-tag">${esc(o.label)}</div><div class="option-text">${esc(o.text)}</div></div>`
+  ).join('');
+  document.getElementById('bottomLineEl').textContent = '"' + (r.bottomLine||'') + '" ⚡';
+  const out = document.getElementById('output');
+  out.classList.add('visible');
+  setTimeout(() => out.scrollIntoView({behavior:'smooth',block:'start'}), 120);
+}
+
+// ─── COMMUNITY ───
+function renderCommunity() {
+  const feed = document.getElementById('communityFeed');
+  if (!communityPosts.length) {
+    feed.innerHTML = '<div class="empty-state"><div class="emoji">👀</div><p>No decodes shared yet.<br>Decode something and hit <strong>Share to Community.</strong></p></div>';
+    return;
+  }
+  feed.innerHTML = communityPosts.map((p,i) => `
+    <div class="post ${i===0?'post-new':''}">
+      <div class="post-sit">"${esc(p.situation.slice(0,160))}${p.situation.length>160?'…':''}"</div>
+      <div class="post-verdict">${esc(p.decode.slice(0,260))}${p.decode.length>260?'…':''}</div>
+      <div class="post-footer">
+        <span class="post-tag">${esc(p.pill)}</span>
+        <span class="post-tag">${esc(p.tone)}</span>
+        <button class="post-heart ${p.liked?'liked':''}" onclick="likePost(${i})">${p.liked?'❤️':'🤍'} ${p.likes}</button>
+        <span class="post-time">${p.time}</span>
+      </div>
+    </div>`).join('');
+}
+function likePost(i) {
+  if (communityPosts[i].liked) return;
+  communityPosts[i].liked = true; communityPosts[i].likes++;
+  saveCommunity(); renderCommunity();
+}
+function shareToCommunity() {
+  if (!lastResult||!lastSituation) { showToast('Decode something first!'); return; }
+  communityPosts.unshift({situation:lastSituation,decode:lastResult.decode||'',pill:activePill,tone:activeTone,likes:0,liked:false,time:'Just now'});
+  saveCommunity(); renderCommunity();
+  confetti({particleCount:90,spread:70,origin:{y:.6},colors:['#C8445C','#E8728A','#F7C5CE','#FFFFFF','#9B2A41']});
+  showToast('✨ Shared to the community!');
+  switchTab('community', document.querySelectorAll('.nav-tab')[1]);
+}
+
+// ─── RED FLAGS AI ───
+async function analyzeRedFlags() {
+  const input = document.getElementById('rfInput').value.trim();
+  if (!input) return;
+  const btn = document.getElementById('rfBtn');
+  btn.disabled = true; btn.innerHTML = 'Checking <span class="dots"><span></span><span></span><span></span></span>';
+  try {
+    const r = await askGirlTalk('redflags', input);
+    flagDanger(r.verdict);
+    const banner = document.getElementById('rfBanner');
+    banner.className = 'verdict-banner ' + (r.verdict||'caution');
+    document.getElementById('rfEmoji').textContent = r.verdictEmoji||'⚠️';
+    document.getElementById('rfLabel').textContent = {clear:'🟢 Looks Okay',caution:'⚠️ Watch Closely',danger:'🚨 Red Flag Alert'}[r.verdict]||'⚠️';
+    document.getElementById('rfVerdictText').textContent = r.verdictText||'';
+    document.getElementById('rfFlagChips').innerHTML = (r.flags||[]).map(f=>`<span class="det-chip">${esc(f)}</span>`).join('');
+    document.getElementById('rfPattern').textContent = r.patternType||'';
+    document.getElementById('rfProjection').textContent = r.projection||'';
+    document.getElementById('rfKnow').textContent = r.whatSheShould||'';
+    document.getElementById('rfMoves').innerHTML = (r.moves||[]).map(m=>`<div class="script-card" style="margin-bottom:8px;"><button class="copy-btn" onclick="copyScript(this)">Copy</button><div class="script-sit">${esc(m.label)}</div><div class="script-text">${esc(m.text)}</div></div>`).join('');
+    document.getElementById('rfBottom').textContent = '"' + (r.bottomLine||'') + '" ⚡';
+    document.getElementById('rfResult').classList.add('visible');
+    setTimeout(() => document.getElementById('rfResult').scrollIntoView({behavior:'smooth',block:'start'}), 100);
+  } catch(err) { showToast('Couldn\'t reach the AI — ' + err.message, 3500); }
+  finally { btn.disabled=false; btn.innerHTML='Check for Red Flags →'; }
+}
+
+// ─── PLAYER STOPPER: SCAN ───
+function toggleFlag(el) { el.classList.toggle('checked'); updateScore(); saveFlags(); }
+function updateScore() {
+  const total = document.querySelectorAll('#flagList .flag-item').length;
+  const checked = document.querySelectorAll('#flagList .flag-item.checked').length;
+  const pct = (checked/total)*100;
+  document.getElementById('scoreFill').style.width = pct + '%';
+  const el = document.getElementById('scoreVerdict');
+  if (checked===0) { el.textContent='Check the flags that apply.'; el.style.color='var(--text-mid)'; }
+  else if (checked<=3) { el.textContent=`👀 ${checked} flag${checked>1?'s':''} — a few things to watch.`; el.style.color='var(--text-mid)'; }
+  else if (checked<=7) { el.textContent=`⚠️ ${checked} flags — this pattern is worth taking seriously.`; el.style.color='var(--amber)'; }
+  else if (checked<=12) { el.textContent=`🚨 ${checked} flags — significant red flag cluster. Protect yourself.`; el.style.color='var(--red)'; }
+  else { el.textContent=`🛑 ${checked} flags checked. This is a warning system, not a person.`; el.style.color='var(--red)'; }
+  if (checked>=10) confetti({particleCount:60,spread:55,origin:{y:.6},colors:['#C8445C','#E8728A','#F7C5CE']});
+}
+function saveFlags() {
+  const flags = [...document.querySelectorAll('#flagList .flag-item')].map(el=>el.classList.contains('checked'));
+  localStorage.setItem('gt-flags', JSON.stringify(flags));
+}
+function loadFlags() {
+  const saved = JSON.parse(localStorage.getItem('gt-flags')||'[]');
+  document.querySelectorAll('#flagList .flag-item').forEach((item,i) => { if(saved[i]) item.classList.add('checked'); });
+  updateScore();
+}
+function resetFlags() {
+  document.querySelectorAll('#flagList .flag-item').forEach(el=>el.classList.remove('checked'));
+  updateScore(); localStorage.removeItem('gt-flags'); showToast('Reset ✓');
+}
+function sharePlayerScan() {
+  const checked = document.querySelectorAll('#flagList .flag-item.checked').length;
+  const text = `I just ran a Player Stopper scan — ${checked} red flags detected. 🚩`;
+  if (navigator.share) navigator.share({title:'Girl Talk',text}).catch(()=>{});
+  else navigator.clipboard.writeText(text).then(()=>showToast('Copied to clipboard 📋'));
+}
+
+// ─── TACTICS ───
+function toggleTactic(card) {
+  const wasOpen = card.classList.contains('open');
+  document.querySelectorAll('.tactic-card').forEach(c=>c.classList.remove('open'));
+  if (!wasOpen) card.classList.add('open');
+}
+
+// ─── SCRIPTS COPY ───
+function copyScript(btn) {
+  const card = btn.closest('.script-card');
+  const text = card.querySelector('.script-text').textContent.trim();
+  navigator.clipboard.writeText(text).then(()=>{
+    btn.textContent='✓'; showToast('Copied — go send it 💪');
+    setTimeout(()=>btn.textContent='Copy', 2000);
+  });
+}
+
+// ─── PLAYER QUIZ ───
+function answerQuiz(prefix, qNum, optNum, correctIdx) {
+  if (psAnswered[qNum] !== undefined) return;
+  psAnswered[qNum] = optNum;
+  const qEl = document.getElementById('pq-' + qNum);
+  const opts = qEl.querySelectorAll('.quiz-opt');
+  opts.forEach((opt,i) => {
+    opt.disabled = true;
+    if (i===correctIdx) opt.classList.add('correct');
+    if (i===optNum && optNum!==correctIdx) opt.classList.add('wrong');
+  });
+  document.getElementById('pe-' + qNum).classList.add('show');
+  if (optNum===correctIdx) psScore++;
+  if (Object.keys(psAnswered).length===5) showQuizResult();
+}
+function showQuizResult() {
+  const msgs = [
+    {min:5,emoji:'🏆',score:'5/5 — Flawless',msg:'Zero chance anyone runs game on you.'},
+    {min:4,emoji:'💪',score:'4/5 — Sharp',msg:'One blind spot — read the explanations to close it.'},
+    {min:3,emoji:'👀',score:'3/5 — Getting there',msg:'Good instincts, some gaps. Study the tactics section.'},
+    {min:0,emoji:'📚',score:psScore+'/5 — Study time',msg:"No shame. Now you know. That's the point."}
+  ];
+  const m = msgs.find(m=>psScore>=m.min);
+  document.getElementById('psQuizEmoji').textContent = m.emoji;
+  document.getElementById('psQuizScore').textContent = m.score;
+  document.getElementById('psQuizMsg').textContent = m.msg;
+  document.getElementById('psQuizResult').style.display = 'block';
+  if (psScore===5) confetti({particleCount:140,spread:75,origin:{y:.6}});
+}
+function resetQuiz() {
+  Object.keys(psAnswered).forEach(k=>delete psAnswered[k]);
+  psScore = 0;
+  for (let i=0;i<5;i++) {
+    const qEl = document.getElementById('pq-'+i);
+    qEl.querySelectorAll('.quiz-opt').forEach(opt=>{opt.disabled=false;opt.classList.remove('correct','wrong');});
+    document.getElementById('pe-'+i).classList.remove('show');
+  }
+  document.getElementById('psQuizResult').style.display='none';
+}
+
+// ─── PLAYER AI ───
+async function analyzePlayer() {
+  const input = document.getElementById('psInput').value.trim();
+  if (!input) return;
+  const btn = document.getElementById('psBtn');
+  btn.disabled=true; btn.innerHTML='Analyzing <span class="dots"><span></span><span></span><span></span></span>';
+  try {
+    const r = await askGirlTalk('player', input);
+    flagDanger(r.verdict);
+    document.getElementById('psBanner').className = 'verdict-banner '+(r.verdict||'caution');
+    document.getElementById('psEmoji').textContent = r.verdictEmoji||'⚠️';
+    document.getElementById('psLabel').textContent = {clear:'🟢 Looks Okay',caution:'⚠️ Watch Closely',danger:'🚨 Player Alert'}[r.verdict]||'⚠️';
+    document.getElementById('psVerdictText').textContent = r.verdictText||'';
+    document.getElementById('psTactics').innerHTML = (r.tactics||[]).map(t=>`<span class="det-chip">${esc(t)}</span>`).join('');
+    document.getElementById('psRisk').textContent = r.riskLevel||'';
+    document.getElementById('psWants').textContent = r.whatHeWants||'';
+    document.getElementById('psKnow').textContent = r.whatSheShould||'';
+    document.getElementById('psMoves').innerHTML = (r.moves||[]).map(m=>`<div class="script-card" style="margin-bottom:8px;"><button class="copy-btn" onclick="copyScript(this)">Copy</button><div class="script-sit">${esc(m.label)}</div><div class="script-text">${esc(m.text)}</div></div>`).join('');
+    document.getElementById('psBottom').textContent = '"'+(r.bottomLine||'')+'" ⚡';
+    document.getElementById('psResult').classList.add('visible');
+    setTimeout(()=>document.getElementById('psResult').scrollIntoView({behavior:'smooth',block:'start'}),100);
+    if (r.verdict==='danger') confetti({particleCount:70,spread:55,origin:{y:.6},colors:['#C8445C','#E8728A','#F7C5CE']});
+  } catch(err) { showToast('Couldn\'t reach the AI — ' + err.message, 3500); }
+  finally { btn.disabled=false; btn.innerHTML='Analyze Him →'; }
+}
+
+// ─── GOOD GUY AI ───
+async function runGoodGuyAI() {
+  const input = document.getElementById('goodGuyInput').value.trim();
+  if (!input) return;
+  const btn = document.getElementById('ggBtn');
+  btn.disabled=true; btn.innerHTML='Scanning <span class="dots"><span></span><span></span><span></span></span>';
+  try {
+    const r = await askGirlTalk('goodguy', input);
+    document.getElementById('ggVerdict').textContent = r.verdict||'';
+    document.getElementById('ggGreenFlags').innerHTML = (r.greenFlags||[]).map(f=>`<div style="font-size:12.5px;color:var(--green);margin-bottom:4px;line-height:1.4;">✅ ${esc(f)}</div>`).join('');
+    document.getElementById('ggWatchPoints').innerHTML = (r.watchPoints||[]).map(w=>`<div style="font-size:12.5px;color:var(--amber);margin-bottom:4px;line-height:1.4;">👀 ${esc(w)}</div>`).join('');
+    document.getElementById('ggResponses').innerHTML = (r.responses||[]).map(resp=>`<div class="option-card" style="border-left-color:var(--green);background:#EAF5ED;"><div class="option-tag" style="color:var(--green);">${esc(resp.label)}</div><div class="option-text">${esc(resp.text)}</div></div>`).join('');
+    document.getElementById('ggBottomLine').textContent = '"'+(r.bottomLine||'')+'" 🌟';
+    document.getElementById('ggResult').classList.add('visible');
+    setTimeout(()=>document.getElementById('ggResult').scrollIntoView({behavior:'smooth',block:'start'}),100);
+    confetti({particleCount:100,spread:70,origin:{y:.6},colors:['#2E7D32','#66A36C','#A5D6A7','#FFFFFF']});
+  } catch(err) { showToast('Couldn\'t reach the AI — ' + err.message, 3500); }
+  finally { btn.disabled=false; btn.innerHTML='Scan for Good Guy Energy →'; }
+}
+
+// ─── LOVE LANGUAGES ───
+const llData = {
+  'Words-Words':   {score:95,label:'Perfect Match',insight:'You both speak the same language. You feel loved when he tells you, and he feels loved when you tell him. Keep the verbal affirmation consistent — it compounds over time.',script:'"I feel so connected to you when you tell me how you feel. That really matters to me."',tips:'Even with a match, don\'t take it for granted. Consistent, specific compliments land harder than generic ones. Name what specifically you appreciate.'},
+  'Acts-Acts':     {score:93,label:'Perfect Match',insight:'Actions are everything to both of you. You show love by doing and feel loved when he does. Reliability and follow-through are your love currency.',script:'"When you help me with [specific thing], I feel so taken care of. That\'s my love language."',tips:'Be specific about which acts mean most. "Making dinner" vs "checking in when you know I\'m stressed" — both are acts, but the emotional weight is very different.'},
+  'Gifts-Gifts':   {score:90,label:'Perfect Match',insight:'Thoughtful gestures are your shared currency. Neither of you sees this as materialistic — you both understand that a well-chosen gift says "I was thinking about you."',script:'"I love when you bring me something that shows you were thinking of me. It really makes me feel seen."',tips:'The value is in the thought, not the price. Random small gestures often land bigger than expensive expected ones.'},
+  'Time-Time':     {score:94,label:'Perfect Match',insight:'Undivided presence is what you both need most. Distracted time together leaves you both empty. Phones down, eyes up.',script:'"When we have real quality time with no distractions, that\'s when I feel closest to you. Can we protect that more?"',tips:'Quality > quantity. Two focused hours beat six distracted ones. Establish phone-free windows.'},
+  'Touch-Touch':   {score:92,label:'Perfect Match',insight:'Physical presence is your shared love channel. Non-sexual affection — holding hands, a hand on your back, sitting close — matters as much as intimacy.',script:'"Physical closeness is how I feel connected to you. Even small things like holding hands make a big difference to me."',tips:'Affection outside of sexual contexts is the real test. Casual, everyday touch communicates consistent love.'},
+  'Words-Acts':    {score:55,label:'Workable with Effort',insight:'You need to hear it; he shows it. He may feel he\'s saying everything through what he does — and you may feel starved for verbal acknowledgment even when he\'s doing everything right.',script:'"I know you show love through what you do and I really appreciate that. I also need to hear it sometimes — even a simple \'I\'m proud of you\' goes a long way."',tips:'Ask him to narrate his acts: "I\'m making you dinner because I care about you." It bridges both languages.'},
+  'Words-Gifts':   {score:48,label:'Requires Translation',insight:'You need words; he expresses through gifts. The emotional frequency is genuinely different here. Neither is wrong — you\'ll need to explicitly teach each other.',script:'"I love thoughtful gestures, and I also really need verbal affirmation. Can we work on both?"',tips:'When he gives you something, tell him specifically what the words you need would be. "This is so sweet — it would mean even more if you told me why you chose it."'},
+  'Words-Time':    {score:68,label:'Good Overlap',insight:'Quality time often includes verbal connection — this pairing has natural overlap. Your need for words and his expression through time can meet in deep conversation.',script:'"Our conversations are honestly one of the main ways I feel loved by you. Talking like this fills me up."',tips:'Make verbal check-ins a ritual of your quality time. Ask each other meaningful questions regularly.'},
+  'Words-Touch':   {score:52,label:'Requires Translation',insight:'Different primary channels. Carve out dedicated time for both — a moment of physical closeness followed by verbal expression bridges this gap naturally.',script:'"I feel most loved when you\'re physically close AND tell me how you feel. Both matter to me."',tips:'Create rituals that combine both — a daily hug where you each say one thing you appreciate about each other.'},
+  'Acts-Gifts':    {score:60,label:'Workable',insight:'Both are action-oriented expressions of love, which creates common ground. The difference is personal vs practical — learn which specific acts and gifts land hardest.',script:'"I feel most cared for when you do something that shows you were thinking about what I need — whether that\'s a gesture or just helping with something."',tips:'Overlap where possible: doing something (act) that also serves as a gift. Picking up her favorite coffee is both.'},
+  'Acts-Time':     {score:70,label:'Good Overlap',insight:'Acts of service during shared time is a powerful combination. Doing things together — cooking, building, creating — hits both languages.',script:'"I feel most connected when we\'re actually doing things together — that counts as quality time for me AND feels like love."',tips:'Create shared projects or rituals. "Let\'s cook together Sunday" covers both languages simultaneously.'},
+  'Acts-Touch':    {score:65,label:'Good Overlap',insight:'Physical care — massage, nursing someone when sick, physical help — overlaps both languages naturally.',script:'"When you take care of me physically — even small things — I feel so loved. That\'s both an act of service and physical connection."',tips:'Acts that involve physical proximity land double for both of you.'},
+  'Gifts-Time':    {score:50,label:'Requires Translation',insight:'He needs undivided attention; you want thoughtful gestures. These are genuinely different love channels — but they can meet when gifts become a ritual of quality time (selecting them together, or the presentation becoming a shared moment).',script:'"Quality time together matters to me, and so do thoughtful gestures. Can we bring both into how we show up for each other?"',tips:'Plan gift-giving as an experience — a shared activity of selecting or creating something together converts both languages at once.'},
+  'Gifts-Touch':   {score:55,label:'Workable',insight:'You lean on different channels. Physical gifts that encourage physical connection can bridge this gap creatively.',script:'"I love thoughtful gestures and physical affection. I don\'t always need big things — a surprise + a hug does a lot for me."',tips:'Keep gifts intimate and physical where possible. Something that creates a shared physical experience (a massage candle, a cozy blanket, a shared experience gift) serves both.'},
+  'Time-Touch':    {score:82,label:'Strong Match',insight:'These two overlap naturally — real quality time often involves physical closeness. You\'re both asking for presence and connection, just through slightly different channels.',script:'"Being physically close during our time together is when I feel most connected. Just being near you matters."',tips:'Protect phone-free time together. Physical presence without distraction serves both languages.'}
+};
+
+function assessLoveLang() {
+  const yours = document.getElementById('yourLang').value;
+  const his = document.getElementById('hisLang').value;
+  const key1 = yours + '-' + his;
+  const key2 = his + '-' + yours;
+  const d = llData[key1] || llData[key2] || {score:60,label:'Unique Combination',insight:'Your love languages are different but complementary with effort. Explicitly sharing what makes you feel most loved is the most direct path.',script:'"Can we each share the specific things that make us feel most loved? I want to make sure I\'m speaking your language and you know how to speak mine."',tips:'The most important thing: don\'t assume your partner feels love the same way you give it. Ask, don\'t guess.'};
+  document.getElementById('loveScore').textContent = d.score + '%';
+  document.getElementById('loveScoreLabel').textContent = d.label;
+  document.getElementById('loveInsight').textContent = d.insight;
+  document.getElementById('loveScript').textContent = d.script;
+  document.getElementById('loveTips').textContent = d.tips;
+  document.getElementById('loveResult').style.display = 'block';
+  if (d.score >= 85) confetti({particleCount:100,spread:65,origin:{y:.6},colors:['#C8445C','#E8728A','#F7C5CE']});
+}
+
+// ─── GAYDAR AI ───
+async function runGaydarAI() {
+  const input = document.getElementById('gaydarInput').value.trim();
+  if (!input) return;
+  const btn = document.getElementById('gdBtn');
+  btn.disabled=true; btn.innerHTML='Reading the signals <span class="dots"><span></span><span></span><span></span></span>';
+  try {
+    const r = await askGirlTalk('gaydar', input);
+    const bannerClasses = {'likely-gay':'gaydar-high','possibly-bi':'gaydar-high','straight-unavailable':'gaydar-low','unclear':'gaydar-mid'};
+    const banner = document.getElementById('gdBanner');
+    banner.className = bannerClasses[r.verdict]||'gaydar-mid';
+    document.getElementById('gdEmoji').textContent = r.verdictEmoji||'🤔';
+    document.getElementById('gdLabel').textContent = r.verdictLabel||'';
+    document.getElementById('gdVerdictText').textContent = r.verdictText||'';
+    document.getElementById('gdSignals').innerHTML = (r.signals||[]).map(s=>`<div style="font-size:12.5px;color:var(--text-mid);margin-bottom:5px;line-height:1.4;">• ${esc(s)}</div>`).join('');
+    document.getElementById('gdAlternatives').innerHTML = (r.alternatives||[]).map(a=>`<div style="font-size:12.5px;color:var(--text-soft);margin-bottom:5px;line-height:1.4;">• ${esc(a)}</div>`).join('');
+    document.getElementById('gdMoves').innerHTML = (r.moves||[]).map(m=>`<div class="option-card" style="border-left-color:var(--purple-l);background:linear-gradient(135deg,#F3E5F5,#EDE7F6);"><div class="option-tag" style="color:var(--purple);">${esc(m.label)}</div><div class="option-text">${esc(m.text)}</div></div>`).join('');
+    document.getElementById('gdBottom').textContent = '"'+(r.bottomLine||'')+'" ✨';
+    document.getElementById('gdResult').classList.add('visible');
+    setTimeout(()=>document.getElementById('gdResult').scrollIntoView({behavior:'smooth',block:'start'}),100);
+    if (r.verdict==='likely-gay'||r.verdict==='possibly-bi') confetti({particleCount:80,spread:60,origin:{y:.6},colors:['#9C27B0','#E040FB','#CE93D8','#FFFFFF']});
+  } catch(err) { showToast('Couldn\'t reach the AI — ' + err.message, 3500); }
+  finally { btn.disabled=false; btn.innerHTML='Activate Gaydar →'; }
+}
+
+// ─── UTILS ───
+function esc(s) {
+  return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+// ─── INIT ───
+document.addEventListener('DOMContentLoaded', () => {
+  loadFlags();
+  renderCommunity();
+});
+</script>
+</body>
+</html>
