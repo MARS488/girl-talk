@@ -198,7 +198,7 @@
 
 <div class="tabbar" role="tablist">
     <button class="tab-link active" id="tab0" onclick="switchTab(0)">Decode</button>
-    <button class="tab-link" id="tab1" onclick="switchTab(1)">Scripts</button>
+    <button class="tab-link" id="tab1" onclick="switchTab(1)">Toolkit</button>
     <button class="tab-link" id="tab2" onclick="switchTab(2)">Safety</button>
     <button class="tab-link" id="tab3" onclick="switchTab(3)">My Cases</button>
 </div>
@@ -242,39 +242,16 @@
     </div>
 </div>
 
-<!-- ====================== SCRIPTS TAB ====================== -->
+<!-- ====================== TOOLKIT TAB ====================== -->
 <div class="tab-content" id="tab-content-1" role="tabpanel">
     <div class="card">
-        <h2>Script Library 💕</h2>
-        <p class="muted" style="margin-bottom:1rem;">Ready-to-copy words for the hard conversations. Tap any script to copy it.</p>
+        <h2>Your Toolkit 🧰</h2>
+        <p class="muted" style="margin-bottom:1rem;">The exact words for your situation come with each read on the Decode tab. This is for the work you do <em>for you</em> — grounding in the moment, and building steadier habits over time.</p>
 
-        <h3>Setting a boundary</h3>
-        <div class="script-box" onclick="copyText(this)">"I've noticed I feel anxious when plans stay vague. I need us to lock in plans at least a day ahead — that works better for me."</div>
-        <div class="script-box" onclick="copyText(this)">"I'm not able to do late-night-only. If you want to see me, I'd love a real plan during the day."</div>
-
-        <h3>When he says you're "overthinking"</h3>
-        <div class="script-box" onclick="copyText(this)">"My feelings aren't an overreaction — they're information. I'm allowed to bring something up without it being a fight."</div>
-
-        <h3>Asking for what you need (securely)</h3>
-        <div class="script-box" onclick="copyText(this)">"I've been feeling a little disconnected lately. Can we plan some real quality time this week?"</div>
-        <div class="script-box" onclick="copyText(this)">"I like you, and I also want to know we're on the same page. What are you looking for right now?"</div>
-
-        <h3>Walking away with your dignity</h3>
-        <div class="script-box" onclick="copyText(this)">"I've realized we want different things, and that's okay. I'm going to step back so I can find something that actually fits. Take care."</div>
-
-        <hr class="divider">
-
-        <h2>ADHD, RSD &amp; Emotional Regulation</h2>
-        <p class="muted">Dating with ADHD and rejection-sensitive dysphoria is a lot. These help.</p>
-
-        <h3>During an emotional flood</h3>
-        <div class="script-box" onclick="copyText(this)">"I'm flooded right now and I need a little space so I don't say something I'll regret. I'm not leaving — I just need 20 minutes."</div>
-
-        <h3>Interoception (reading your own body)</h3>
-        <div class="script-box" onclick="copyText(this)">"My brain sometimes struggles to sense hunger, tiredness, or rising anxiety. When I seem off, a gentle 'how are you feeling in your body?' really helps."</div>
-
-        <h3>When RSD hits after a slow reply</h3>
-        <div class="script-box" onclick="copyText(this)">"A slow text is not proof I'm being abandoned. I can feel the panic AND choose not to act on it. I'll check back in with myself in an hour."</div>
+        <h3>Feeling flooded right now?</h3>
+        <p class="muted small">A 30-second reset before you text back something you'll regret.</p>
+        <button onclick="startGrounding()" id="groundBtn" class="btn-full" style="margin-top:6px;">Start a grounding breath</button>
+        <div id="groundBox"></div>
 
         <hr class="divider">
 
@@ -568,7 +545,7 @@ function decode() {
 
                 <div class="read-actions">
                     <button class="btn-sm" onclick="saveLastCase()">Save to My Cases</button>
-                    <button class="btn-ghost btn-sm" onclick="switchTab(1)">See more scripts</button>
+                    <button class="btn-ghost btn-sm" onclick="clearRead()">New read</button>
                 </div>
             </div>`;
         output.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
@@ -646,6 +623,57 @@ function useExample(el) {
     inp.value = el.textContent.trim();
     document.getElementById('charCount').textContent = `${inp.value.length} / 1500`;
     inp.focus();
+}
+
+function clearRead() {
+    document.getElementById('decodeOutput').innerHTML = '';
+    const inp = document.getElementById('situationInput');
+    inp.value = '';
+    document.getElementById('charCount').textContent = '0 / 1500';
+    inp.focus();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+/* Grounding: a guided box-breath, revealed only when she asks for it. */
+let groundTimer = null;
+function startGrounding() {
+    const box = document.getElementById('groundBox');
+    const btn = document.getElementById('groundBtn');
+    if (groundTimer) { clearInterval(groundTimer); groundTimer = null; }
+    const steps = [
+        { t: 'Breathe in…', s: 4 },
+        { t: 'Hold…', s: 4 },
+        { t: 'Breathe out…', s: 6 },
+        { t: 'Hold…', s: 2 }
+    ];
+    let round = 0, i = 0, left = steps[0].s;
+    btn.textContent = 'Restart';
+    box.innerHTML = `<div class="script-box" style="text-align:center;">
+        <div id="groundPhase" style="font-family:'Cormorant Garamond',Georgia,serif;font-size:1.6rem;color:var(--rose);">${steps[0].t}</div>
+        <div id="groundCount" style="font-size:2.4rem;font-weight:700;margin:6px 0;">${left}</div>
+        <div class="muted small">Round <span id="groundRound">1</span> of 3 · you're doing great</div>
+    </div>`;
+    groundTimer = setInterval(() => {
+        left--;
+        if (left <= 0) {
+            i++;
+            if (i >= steps.length) { i = 0; round++; }
+            if (round >= 3) {
+                clearInterval(groundTimer); groundTimer = null;
+                box.innerHTML = `<div class="script-box" style="text-align:center;">
+                    <div style="font-family:'Cormorant Garamond',Georgia,serif;font-size:1.5rem;color:var(--rose);">There you go. 🤍</div>
+                    <div class="muted small" style="margin-top:6px;">Notice your feet on the floor. You don't have to reply this second.</div>
+                </div>`;
+                btn.textContent = 'Start a grounding breath';
+                return;
+            }
+            left = steps[i].s;
+            document.getElementById('groundPhase').textContent = steps[i].t;
+            document.getElementById('groundRound').textContent = round + 1;
+        }
+        const c = document.getElementById('groundCount');
+        if (c) c.textContent = left;
+    }, 1000);
 }
 
 function switchTab(n) {
