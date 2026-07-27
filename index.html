@@ -9,7 +9,6 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Cabinet+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
 
     <style>
         :root {
@@ -79,10 +78,10 @@
         }
         @media (max-width: 640px) { .card { padding: 22px 18px; margin: 1rem; border-radius: 20px; } }
 
-        h1 { font-family: 'Cormorant Garamond', serif; text-align: center; font-size: 2.5rem; line-height:1.1; margin-bottom: 6px; }
+        h1 { font-family: 'Cormorant Garamond', Georgia, 'Times New Roman', serif; text-align: center; font-size: 2.5rem; line-height:1.1; margin-bottom: 6px; }
         h1 em { color: var(--rose); font-style: italic; }
         .subtitle { text-align:center; color: var(--text-mid); margin-bottom: 22px; font-size: 15px; }
-        h2, h3 { font-family: 'Cormorant Garamond', serif; color: var(--rose-deep); margin: 22px 0 10px; line-height:1.15; }
+        h2, h3 { font-family: 'Cormorant Garamond', Georgia, 'Times New Roman', serif; color: var(--rose-deep); margin: 22px 0 10px; line-height:1.15; }
         [data-theme="dark"] h2, [data-theme="dark"] h3 { color: var(--rose-mid); }
         h2 { font-size: 1.9rem; }
         label.field-label { display:block; font-weight:600; font-size:14px; margin: 4px 0 8px; color: var(--text-mid); }
@@ -133,7 +132,7 @@
         .flag.red { background: var(--red-bg); color: var(--red); }
         .flag.yellow { background: var(--yellow-bg); color: var(--yellow); }
         .flag.green { background: var(--green-bg); color: var(--green); }
-        .read-headline { font-family:'Cormorant Garamond', serif; font-size: 1.7rem; line-height:1.2; margin: 14px 0 6px; color: var(--text); }
+        .read-headline { font-family:'Cormorant Garamond', Georgia, 'Times New Roman', serif; font-size: 1.7rem; line-height:1.2; margin: 14px 0 6px; color: var(--text); }
         .read-persona-tag { display:flex; align-items:center; gap:8px; font-size:13px; color:var(--text-soft); margin-bottom: 10px; }
         .read-body { margin: 14px 0; }
         .read-section-label { font-weight:700; color: var(--rose); font-size:13px; text-transform:uppercase; letter-spacing:.05em; margin-top:18px; }
@@ -352,6 +351,44 @@
 /* ============================================================
    GIRL TALK — Instant Read engine (100% on-device, no API key)
    ============================================================ */
+
+/* Built-in confetti — no external library, so the app stays fully self-contained. */
+window.confetti = function(opts) {
+    opts = opts || {};
+    if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const count = opts.particleCount || 120;
+    const spread = opts.spread || 70;
+    const originY = (opts.origin && opts.origin.y) || 0.5;
+    const canvas = document.createElement('canvas');
+    canvas.style.cssText = 'position:fixed;inset:0;pointer-events:none;z-index:9999';
+    canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+    document.body.appendChild(canvas);
+    const ctx = canvas.getContext('2d');
+    const colors = ['#C8445C', '#E8728A', '#9B2A41', '#F9DDE4', '#FFD1DC', '#2E9E6B'];
+    const cx = canvas.width / 2, cy = canvas.height * originY;
+    const parts = [];
+    for (let i = 0; i < count; i++) {
+        const angle = (-90 + (Math.random() - 0.5) * spread) * Math.PI / 180;
+        const speed = 6 + Math.random() * 9;
+        parts.push({
+            x: cx, y: cy, vx: Math.cos(angle) * speed, vy: Math.sin(angle) * speed,
+            color: colors[i % colors.length], size: 4 + Math.random() * 5,
+            rot: Math.random() * 6, vr: (Math.random() - 0.5) * 0.4
+        });
+    }
+    let frames = 0;
+    (function frame() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        frames++;
+        parts.forEach(p => {
+            p.vy += 0.28; p.vx *= 0.99; p.x += p.vx; p.y += p.vy; p.rot += p.vr;
+            ctx.save(); ctx.translate(p.x, p.y); ctx.rotate(p.rot);
+            ctx.globalAlpha = Math.max(0, 1 - frames / 130); ctx.fillStyle = p.color;
+            ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size * 0.6); ctx.restore();
+        });
+        if (frames < 130) requestAnimationFrame(frame); else canvas.remove();
+    })();
+};
 
 let selectedPersona = 'bigsis';
 let lastRead = null;
