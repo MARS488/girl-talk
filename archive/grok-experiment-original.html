@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Girl Talk • Your Brutally Honest Best Friend</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Cabinet+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+    
+    <style>
+        :root {
+            --rose: #C8445C; --rose-deep: #9B2A41; --rose-mid: #E8728A;
+            --blush: #FDF0F3; --blush-deep: #F9DDE4; --cream: #FDFAF8;
+            --surface: #FFFFFF; --text: #18100E; --text-mid: #6B4A52;
+            --text-soft: #A07888; --border: rgba(200,68,92,0.18); --radius: 24px;
+        }
+        [data-theme="dark"] {
+            --cream: #140C0F; --surface: #1E1318; --blush: #2E1C22;
+            --blush-deep: #391F28; --text: #F4ECF0; --text-mid: #C09AA8;
+        }
+
+        * { box-sizing: border-box; margin:0; padding:0; }
+        body { 
+            font-family: 'Cabinet Grotesk', sans-serif; 
+            background: var(--cream); color: var(--text); 
+            min-height: 100vh; line-height: 1.65;
+        }
+
+        nav {
+            position: sticky; top: 0; z-index: 300;
+            background: rgba(253,250,248,0.95); backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border); padding: 0 1.5rem; height: 68px;
+            display: flex; align-items: center; justify-content: space-between;
+        }
+
+        .nav-brand { display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--text); }
+        .nav-logo { 
+            width: 36px; height: 36px; background: linear-gradient(135deg, var(--rose), var(--rose-deep));
+            border-radius: 12px; display: flex; align-items: center; justify-content: center;
+            color: white; font-size: 20px;
+        }
+
+        .nav-links a { margin-left: 20px; text-decoration: none; color: var(--text-mid); font-weight: 500; }
+        .nav-links a.active { color: var(--rose); font-weight: 600; }
+
+        .card {
+            background: var(--surface); border-radius: var(--radius); padding: 32px;
+            box-shadow: 0 10px 50px -10px rgba(200,68,92,0.18);
+            border: 1px solid var(--border); max-width: 780px; margin: 2rem auto;
+        }
+
+        h1 { font-family: 'Cormorant Garamond', serif; text-align: center; font-size: 2.7rem; margin-bottom: 24px; }
+        h2, h3 { font-family: 'Cormorant Garamond', serif; color: var(--rose-deep); margin: 20px 0 10px; }
+
+        select, textarea { 
+            width: 100%; padding: 18px; border: 1px solid var(--border); 
+            border-radius: 20px; background: var(--blush); font-size: 16px; margin-bottom: 12px;
+        }
+
+        .chip { 
+            padding: 8px 18px; background: var(--blush); border: 1px solid var(--border); 
+            border-radius: 99px; font-size: 13.5px; cursor: pointer; transition: all 0.2s; 
+        }
+        .chip:hover { background: var(--rose); color: white; }
+
+        button { 
+            padding: 16px 32px; background: var(--rose); color: white; border: none; 
+            border-radius: 99px; font-weight: 600; cursor: pointer; transition: all 0.25s; 
+        }
+        button:hover { transform: translateY(-3px); box-shadow: 0 10px 30px rgba(200,68,92,0.3); }
+
+        .output-card, .script-box { 
+            background: var(--surface); border-radius: var(--radius); padding: 28px; 
+            margin-top: 24px; border: 1px solid var(--border); 
+        }
+        .script-box { background: var(--blush-deep); border-left: 6px solid var(--rose); margin: 12px 0; }
+
+        .checklist { list-style: none; padding-left: 0; }
+        .checklist li { 
+            padding: 10px 0; border-bottom: 1px solid var(--border); 
+            display: flex; align-items: center; gap: 12px; cursor: pointer;
+        }
+        .checklist input[type="checkbox"] { accent-color: var(--rose); }
+
+        .progress-container {
+            margin: 15px 0;
+            background: var(--blush);
+            border-radius: 99px;
+            height: 12px;
+            overflow: hidden;
+        }
+        [data-theme="dark"] .progress-container { background: #3A2A2F; }
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--rose), var(--rose-deep));
+            width: 0%;
+            transition: width 0.4s ease;
+            border-radius: 99px;
+        }
+        .progress-text {
+            text-align: center;
+            font-size: 14px;
+            margin-top: 6px;
+            color: var(--text-mid);
+        }
+    </style>
+</head>
+<body>
+
+<nav>
+    <a href="#" class="nav-brand">
+        <div class="nav-logo">💬</div>
+        <span>Girl Talk</span>
+    </a>
+    <div class="nav-links">
+        <a href="#" onclick="switchTab(0)" class="active" id="tab0">Decode</a>
+        <a href="#" onclick="switchTab(1)" id="tab1">Script Library</a>
+        <a href="#" onclick="switchTab(2)" id="tab2">ADHD + RSD</a>
+        <button onclick="toggleDarkMode()" id="themeToggle" style="background:none;border:none;font-size:24px;cursor:pointer;">🌙</button>
+    </div>
+</nav>
+
+<!-- ====================== DECODE TAB ====================== -->
+<div class="tab-content active" id="tab-content-0">
+    <div class="card">
+        <h1>What did he <em>actually</em> mean?</h1>
+
+        <select id="analysisMode">
+            <option value="brutal">Brutal Honesty</option>
+            <option value="trap">Anxious-Avoidant Trap</option>
+            <option value="empathy">Boundary Scripts</option>
+            <option value="shutdown">Shutdown Moments</option>
+            <option value="adhd">ADHD + Dating Lens</option>
+        </select>
+
+        <div style="display:flex;flex-wrap:wrap;gap:8px;margin:16px 0;">
+            <div class="chip" onclick="useExample(this)">“He said he’s busy again...”</div>
+            <div class="chip" onclick="useExample(this)">“You’re overthinking this”</div>
+            <div class="chip" onclick="useExample(this)">Hot and cold after great date</div>
+        </div>
+
+        <textarea id="situationInput" rows="7" placeholder="Paste his message or describe what happened..."></textarea>
+        <div id="charCount" style="text-align:right;font-size:13px;color:var(--text-soft);">0 / 1000</div>
+
+        <button onclick="decodeWithAI()" id="decodeBtn">Get Girl Talk Advice</button>
+        <div id="decodeOutput"></div>
+    </div>
+</div>
+
+<!-- ====================== SCRIPT LIBRARY TAB ====================== -->
+<div class="tab-content" id="tab-content-1">
+    <div class="card">
+        <h2>Script Library 💕</h2>
+        <p style="color:var(--text-mid);margin-bottom:1.5rem;">Ready-to-copy scripts + interactive healing tools.</p>
+
+        <h3>Interoception Awareness</h3>
+        <div class="script-box">
+            <strong>Building awareness:</strong><br><br>
+            “I’m working on noticing what my body is telling me. It would help if you gently ask ‘How are you feeling in your body right now?’”
+        </div>
+        <div class="script-box">
+            <strong>When struggling to read signals:</strong><br><br>
+            “I’m having trouble reading my internal signals right now (interoception). I need a few minutes to check in with my body. I’ll let you know when I understand what I need.”
+        </div>
+        <div class="script-box">
+            <strong>To your partner:</strong><br><br>
+            “My brain sometimes has difficulty sensing hunger, tiredness, or rising anxiety. When I seem off, a gentle check-in helps me a lot.”
+        </div>
+
+        <h3>Secure Attachment Healing</h3>
+        <div class="script-box">
+            <strong>Asking for a need securely:</strong><br><br>
+            “I’ve been feeling a bit disconnected lately. Can we plan some quality time this week?”
+        </div>
+
+        <!-- PROGRESS BAR -->
+        <h3>Secure Attachment Healing Progress</h3>
+        <div class="script-box">
+            <div class="progress-container">
+                <div id="progressBar" class="progress-bar"></div>
+            </div>
+            <div class="progress-text" id="progressText">0 of 6 completed</div>
+
+            <ul class="checklist" id="secureChecklist">
+                <li><input type="checkbox" id="c1"> I practiced self-soothing today instead of panic-texting</li>
+                <li><input type="checkbox" id="c2"> I kept a small promise to myself</li>
+                <li><input type="checkbox" id="c3"> I expressed a need clearly and calmly</li>
+                <li><input type="checkbox" id="c4"> I spent time doing something that brings me joy</li>
+                <li><input type="checkbox" id="c5"> I reminded myself “I am safe and worthy”</li>
+                <li><input type="checkbox" id="c6"> I chose not to chase someone who was pulling away</li>
+            </ul>
+            <button onclick="resetChecklist()" style="margin-top:15px;background:#666;width:auto;padding:10px 20px;">Reset Progress</button>
+        </div>
+    </div>
+</div>
+
+<!-- ====================== ADHD + RSD TAB ====================== -->
+<div class="tab-content" id="tab-content-2">
+    <div class="card">
+        <h2>ADHD, RSD & Emotional Dysregulation</h2>
+        <p style="color:var(--text-mid);">Understanding + scripts for dating with ADHD.</p>
+        
+        <div class="script-box">
+            <strong>During emotional flood:</strong><br><br>
+            “I’m in an emotional flood right now. I need space to calm down so I don’t say something I regret.”
+        </div>
+    </div>
+</div>
+
+<script>
+// ====================== INTERACTIVE PROGRESS BAR ======================
+function updateProgress() {
+    const checks = document.querySelectorAll('#secureChecklist input[type="checkbox"]');
+    let completed = 0;
+    checks.forEach(checkbox => {
+        if (checkbox.checked) completed++;
+    });
+    
+    const percentage = Math.round((completed / checks.length) * 100);
+    document.getElementById('progressBar').style.width = percentage + '%';
+    document.getElementById('progressText').textContent = `${completed} of ${checks.length} completed`;
+    
+    if (completed === checks.length) {
+        confetti({ particleCount: 150, spread: 80, origin: { y: 0.6 } });
+    }
+}
+
+function loadChecklist() {
+    const checks = document.querySelectorAll('#secureChecklist input[type="checkbox"]');
+    checks.forEach((checkbox, index) => {
+        const saved = localStorage.getItem(`secureCheck${index}`);
+        if (saved === 'true') checkbox.checked = true;
+        
+        checkbox.addEventListener('change', () => {
+            localStorage.setItem(`secureCheck${index}`, checkbox.checked);
+            updateProgress();
+        });
+    });
+    updateProgress();
+}
+
+function resetChecklist() {
+    if (confirm("Reset the Secure Attachment Healing Progress?")) {
+        const checks = document.querySelectorAll('#secureChecklist input[type="checkbox"]');
+        checks.forEach((checkbox, index) => {
+            checkbox.checked = false;
+            localStorage.removeItem(`secureCheck${index}`);
+        });
+        updateProgress();
+    }
+}
+
+// ====================== CORE ======================
+function switchTab(n) {
+    document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+    document.getElementById(`tab-content-${n}`).classList.add('active');
+    document.querySelectorAll('.nav-links a').forEach((link, i) => link.classList.toggle('active', i === n));
+}
+
+function toggleDarkMode() {
+    const isDark = document.body.getAttribute('data-theme') === 'dark';
+    const newTheme = isDark ? 'light' : 'dark';
+    document.body.setAttribute('data-theme', newTheme);
+    localStorage.setItem('girlTalkTheme', newTheme);
+    document.getElementById('themeToggle').textContent = newTheme === 'dark' ? '☀️' : '🌙';
+}
+
+function useExample(el) {
+    document.getElementById('situationInput').value = el.textContent;
+}
+
+document.getElementById('situationInput').addEventListener('input', function() {
+    document.getElementById('charCount').textContent = `${this.value.length} / 1000`;
+});
+
+async function decodeWithAI() {
+    const input = document.getElementById('situationInput').value.trim();
+    if (!input) return alert("Tell me what happened 💕");
+
+    const mode = document.getElementById('analysisMode').value;
+    const btn = document.getElementById('decodeBtn');
+    const output = document.getElementById('decodeOutput');
+
+    btn.disabled = true;
+    btn.textContent = "Girl Talk is thinking...";
+    output.innerHTML = `<div style="padding:60px;text-align:center;color:var(--text-mid);">Analyzing with psychology, attachment & real talk...</div>`;
+
+    try {
+        const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer YOUR_GROQ_API_KEY_HERE'
+            },
+            body: JSON.stringify({
+                model: "llama3-70b-8192",
+                temperature: 0.78,
+                max_tokens: 1200,
+                messages: [{ role: "system", content: "You are Girl Talk — brutally honest best friend." }, { role: "user", content: input }]
+            })
+        });
+
+        const data = await res.json();
+        const text = data.choices[0].message.content;
+
+        output.innerHTML = `
+            <div class="output-card">
+                <strong style="color:var(--rose);">Girl Talk's Take:</strong><br><br>
+                ${text.replace(/\n/g, '<br><br>')}
+            </div>
+        `;
+    } catch (e) {
+        output.innerHTML = `<div class="output-card"><strong style="color:var(--rose);">Girl Talk's Take:</strong><br><br>Use the Script Library for interoception awareness, RSD, secure attachment, and more.</div>`;
+    } finally {
+        btn.disabled = false;
+        btn.textContent = "Get Girl Talk Advice";
+    }
+}
+
+// Init
+document.addEventListener('DOMContentLoaded', () => {
+    if (localStorage.getItem('girlTalkTheme') === 'dark') {
+        document.body.setAttribute('data-theme', 'dark');
+        document.getElementById('themeToggle').textContent = '☀️';
+    }
+    loadChecklist();
+    setTimeout(() => document.getElementById('situationInput').focus(), 500);
+});
+</script>
+</body>
+</html>
