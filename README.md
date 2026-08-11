@@ -157,33 +157,36 @@ Executable code and templates.
 
 ---
 
-## Quick Start (4 Steps)
+## Quick Start (Start Here!)
 
-### Step 1: Read These (1.5 hours)
-1. This README
-2. AUTOMATION_ROADMAP.md (understand phased approach)
-3. STARTUP_CHECKLIST.md
-4. INSURANCE_PROCUREMENT_GUIDE.md
+**Pick your path:**
 
-### Step 2: Set Up Automation Phase 1 (This Week - 30 min)
-- Follow AUTOMATION_ROADMAP.md "Week 1: Phase 1 Go-Live"
-- Create Google Form from CLIENT_FLYABILITY_FORM.md
-- Connect to Google Sheets
-- Set up Gmail notification filter
-- Test form submission
+### Path A: Get Live Today (30 Minutes) 🚀
+- Read: `QUICK_START_PHONE_OPERATIONS.md` (this guide)
+- Follow: 5 concrete steps (download app, create form, test, bookmark, reference sheet)
+- Result: Handling inquiries from phone immediately
+- Time investment: 30 minutes
+- Cost: $0
 
-### Step 3: Get Insurance (This Week)
-- Follow INSURANCE_PROCUREMENT_GUIDE.md
-- Call 3-4 carriers
-- Bind both policies by Friday (Aug 15)
-- Get certificates
+### Path B: Full Automation Roadmap (Week 1-4)
+- Read: `AUTOMATION_ROADMAP.md` (phases 0-4 timeline)
+- Week 1: Phase 1 (Google Form, 30 min)
+- Week 2-3: Phase 2 (Zapier auto-email, 1-2 hours)
+- Week 4+: Phase 3 (Automated decisions, 2-3 hours)
+- Result: Fully automated intake, <1 min per inquiry
+- Time investment: 4-5 hours total
+- Cost: $0-20/month
 
-### Step 4: Execute (Week 3-4)
-- Follow STARTUP_CHECKLIST.md Week 3-4
-- Fly 3 jobs (1 demo + 2 paid) using JOB_EXECUTION_PLAYBOOK.md
-- Collect feedback + payments
-- Log everything
-- Decide: Ready for Phase 2 automation (week 3)?
+### Path C: Complete Launch (This Month) 📋
+- Read: `STARTUP_CHECKLIST.md` (2-3 hour deep dive)
+- Week 1-2: Get insurance (INSURANCE_PROCUREMENT_GUIDE.md)
+- Week 3-4: Execute 3 jobs (JOB_EXECUTION_PLAYBOOK.md)
+- Parallel: Set up Phase 1 automation (QUICK_START_PHONE_OPERATIONS.md)
+- Result: Business live, insured, automated, job-tested
+- Time investment: 20-30 hours
+- Cost: ~$2,000 (insurance) + $0-20/month (tools)
+
+**Recommended: Start with Path A today, then move to Path B next week.**
 
 ---
 
@@ -237,16 +240,18 @@ Executable code and templates.
 
 | Need | File |
 |------|------|
-| **Getting Started** |
-| How to start? | STARTUP_CHECKLIST.md |
+| **START HERE** |
+| Fastest path to live (30 min)? | QUICK_START_PHONE_OPERATIONS.md |
+| Full automation roadmap (phases 0-4)? | AUTOMATION_ROADMAP.md |
+| **Getting Started / Launch** |
+| How to start (complete launch)? | STARTUP_CHECKLIST.md |
 | How to get insurance? | INSURANCE_PROCUREMENT_GUIDE.md |
 | What's my status? | LLC_STATUS_DASHBOARD.md |
 | **Automation & Phone-First Operations** |
 | Run business from phone? | PHONE_FIRST_OPERATIONS.md |
 | Is a property flyable? | FLYABILITY_CHECKER.md |
 | Client assessment form? | CLIENT_FLYABILITY_FORM.md |
-| Automation phases (0-4)? | AUTOMATED_INTAKE_FLOW.md |
-| Implementation timeline? | AUTOMATION_ROADMAP.md |
+| Automation flow diagram? | AUTOMATED_INTAKE_FLOW.md |
 | Zapier workflow setup? | ZAPIER_WORKFLOWS.md |
 | **Job Execution** |
 | How to execute a job? | JOB_EXECUTION_PLAYBOOK.md |
