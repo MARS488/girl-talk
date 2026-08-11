@@ -8,22 +8,28 @@
 
 ### Formation
 - **Entity:** Marcus Jay Herring LLC (Georgia)
-- **Status:** Must be in good standing (file annual renewal every year)
+- **Formed:** 02/27/2024 ✅
+- **Status:** Active / In Compliance ✅
+- **Control #:** 24042026
+- **Annual renewal deadline:** February 27 (every year)
 - **Why:** Liability shield. Without it, personal assets are exposed.
 
 **Action items:**
-- [ ] LLC formation document filed with Georgia Secretary of State
+- [✅] LLC formation document filed with Georgia Secretary of State
 - [ ] Operating agreement (internal governance) — simple version is fine for single-member LLC
-- [ ] Annual renewal deadline tracked (usually around your formation date each year)
+- [ ] Set calendar reminder: Feb 27 annual renewal
 
 ### EIN (Employer Identification Number)
-- **What:** Federal tax ID for the LLC (like a Social Security number for the business)
-- **How to get:** Apply at irs.gov (Form SS-4) or have a CPA apply for you
+- **EIN:** 41-2527098 ✅
+- **Issued:** 11/11/2025 (IRS Notice CP 575 G)
+- **⚠️ IMPORTANT:** Corrected from 42-2527098 (transposed digit). Always use 41-2527098.
 - **Why:** Required to open a business bank account, hire people, file business taxes
 
 **Action items:**
-- [ ] EIN assigned and documented
-- [ ] Use this on all business documents, invoices, contracts
+- [✅] EIN assigned and documented
+- [✅] Use this on all business documents, invoices, contracts
+- [ ] If 42-2527098 was sent to any clients/vendors/IRS, contact them to correct it
+- [ ] Keep the CP-575 notice physically (IRS never regenerates duplicates)
 
 ### Business Bank Account
 - **What:** Dedicated account for LLC income and expenses (never mix personal)
@@ -64,14 +70,16 @@
 ## 3. Compliance & Credentials
 
 ### FAA Part 107 License
-- **What:** Remote Pilot Certificate (commercial drone pilot)
+- **Certificate #:** 5051412 ✅
+- **Issued:** November 3, 2025
+- **Recurrent training due:** November 2027 (24 months from issue)
+- **Checkpoint reminder:** ~September 2027 (to allow buffer before lapse)
 - **Why:** Legal requirement to fly for payment in the US
-- **Current status:** Must be up to date; recurrent training required every 2 years
 
 **Action items:**
-- [ ] Part 107 license current
-- [ ] Recurrent training schedule in calendar
-- [ ] License copy in operator file + on hand for client requests
+- [✅] Part 107 license current
+- [ ] Set calendar reminder: September 2027 (recurrent training due Nov 2027)
+- [ ] Scanned copy of certificate ready for client/vendor packets
 
 ### Drone Registration
 - **What:** FAA registration of your specific drone(s)
