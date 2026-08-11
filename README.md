@@ -4,6 +4,10 @@
 
 ---
 
+> ⚠️ **This repo is NOT the authoritative system (added 2026-08-11).** The real source of truth for Marcus Jay Herring LLC is his **Obsidian vault** (`Desktop/Marcus Herring`, desktop-only) mirrored to a **Notion "Command Center"** page, with real names (Herring Drones + Angel Blue Jay for drone, not "CivilitySync" — that's a long-range platform vision, not the current operating name), a tested subcontractor-pilot flow, a full incident/failure playbook, and scheduled audits already running. This git repo was built by a session that couldn't reach that vault and, in places, duplicated or contradicted it — see the correction notice at the top of `INSURANCE_PROCUREMENT_GUIDE.md`. **If anything here disagrees with the vault or Notion, they win.** Treat this repo as a possibly-stale mirror, not ground truth. The real skills for this business (`mjh-llc-operations`, `mjh-first-dollar`, `mjh-growth-playbook`, `mjh-preflight`, `civilitysync-email`) are available to any Claude session working on this LLC — use those before trusting a file in here.
+
+---
+
 ## TL;DR — Start Here
 
 **You have:**
