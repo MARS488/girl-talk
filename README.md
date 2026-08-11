@@ -100,7 +100,16 @@ Keep operations smooth with minimal friction.
   - Partner Tracker
 
 ### 🤖 Automation & Client Intake
-Automated systems for determining flyability and handling inquiries.
+Automated systems for determining flyability and handling inquiries. All accessible from phone.
+
+- **PHONE_FIRST_OPERATIONS.md** — Run entire business from a phone (location-independent)
+  - Complete workflow from phone (inquiries, quotes, payments, scheduling)
+  - Works from beach, hospital, anywhere with internet
+  - Phase 1 (today): Download LAANC app, bookmark forms, enable notifications (30 min)
+  - Phase 2-3: Quote calculator + mobile dashboard + SMS (1-2 hours)
+  - Phase 4+: Fully automated, zero manual phone work
+  - Example: 8-minute inquiry-to-booking flow entirely from phone
+  - Includes failure scenarios, backup plans, scaling to multi-pilot
 
 - **CLIENT_FLYABILITY_FORM.md** — Client-facing Google Form (8 questions)
   - Instant flyability determination for client's property
@@ -232,7 +241,8 @@ Executable code and templates.
 | How to start? | STARTUP_CHECKLIST.md |
 | How to get insurance? | INSURANCE_PROCUREMENT_GUIDE.md |
 | What's my status? | LLC_STATUS_DASHBOARD.md |
-| **Automation & Client Intake** |
+| **Automation & Phone-First Operations** |
+| Run business from phone? | PHONE_FIRST_OPERATIONS.md |
 | Is a property flyable? | FLYABILITY_CHECKER.md |
 | Client assessment form? | CLIENT_FLYABILITY_FORM.md |
 | Automation phases (0-4)? | AUTOMATED_INTAKE_FLOW.md |
