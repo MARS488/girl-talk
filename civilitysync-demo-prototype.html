@@ -341,18 +341,25 @@
       <fieldset>
         <label class="field-label">Package</label>
         <div class="opt-group" id="package">
-          <button class="opt" type="button" data-pkg="quick" data-price="149" aria-pressed="true">
+          <button class="opt" type="button" data-pkg="quick" data-price="149" aria-pressed="false">
             <span class="dot"></span>
             <span class="opt-body">
               <span class="opt-title">Quick Look <span class="opt-price">$149</span></span>
               <span class="opt-desc">Aerial imagery + a short "what I'd flag" summary. 24–48 hrs.</span>
             </span>
           </button>
-          <button class="opt" type="button" data-pkg="full" data-price="349" aria-pressed="false">
+          <button class="opt" type="button" data-pkg="full" data-price="349" aria-pressed="true">
             <span class="dot"></span>
             <span class="opt-body">
-              <span class="opt-title">Full Documentation <span class="opt-price">$349</span></span>
-              <span class="opt-desc">Annotated findings, action table, PDF report. ~48 hrs.</span>
+              <span class="opt-title">Full Assessment <span class="opt-price">$349</span></span>
+              <span class="opt-desc">Annotated findings, action table, PDF report. ~48 hrs. (Most popular)</span>
+            </span>
+          </button>
+          <button class="opt" type="button" data-pkg="seasonal" data-price="349" aria-pressed="false">
+            <span class="dot"></span>
+            <span class="opt-body">
+              <span class="opt-title">Seasonal Plan <span class="opt-price">$349<span style="font-size:0.72rem;color:var(--ink-soft);">/visit</span></span></span>
+              <span class="opt-desc">Full Assessment, repeated spring &amp; fall — catches issues while they're small. Billed per visit.</span>
             </span>
           </button>
         </div>
@@ -397,9 +404,9 @@
 
 <script>
 (function(){
-  var state = { jobtype: 'assessment', pkg: 'quick', price: 149, addr: document.getElementById('addr').value };
+  var state = { jobtype: 'assessment', pkg: 'full', price: 349, addr: document.getElementById('addr').value };
 
-  var PKG_TURN = { quick: '24–48 hrs', full: '~48 hrs' };
+  var PKG_TURN = { quick: '24–48 hrs', full: '~48 hrs', seasonal: '~48 hrs, spring + fall' };
 
   function bindGroup(id, key, cb){
     var group = document.getElementById(id);
