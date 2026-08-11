@@ -14,10 +14,12 @@
 - **Annual renewal deadline:** February 27 (every year)
 - **Why:** Liability shield. Without it, personal assets are exposed.
 
+> These facts are also held in the vault's **Entity Facts - Source of Truth** note, the actual authority per the vault's own rule (fix a fact there first, link to it elsewhere, never retype from memory). Reconciled against it 2026-08-11 — corrections below.
+
 **Action items:**
 - [✅] LLC formation document filed with Georgia Secretary of State
-- [ ] Operating agreement (internal governance) — simple version is fine for single-member LLC
-- [ ] Set calendar reminder: Feb 27 annual renewal
+- [✅] Operating agreement — drafted 2026-08-06 (single-member), has bracketed items for exact formation date/registered agent to pull from the Georgia SOS search, still needs a Georgia attorney's review and Marcus's signature before final
+- [ ] Set calendar reminder: Feb 27 annual renewal — **also note the separate, recurring Georgia Annual Registration filing (Jan 1 – Apr 1 every year, ~$60): miss Apr 1 = penalty, miss Jul 1 = administrative dissolution, i.e. the liability shield stops existing. Confirm 2026's is actually filed at ecorp.sos.ga.gov, don't assume from "Active/Compliance" status alone**
 
 ### EIN (Employer Identification Number)
 - **EIN:** 41-2527098 ✅
@@ -34,9 +36,10 @@
 ### Business Bank Account
 - **What:** Dedicated account for LLC income and expenses (never mix personal)
 - **Why:** Legal clarity (IRS assumes you're mixing if you don't have a business account), accounting simplicity, audit protection
+- **Likely already open:** Regions account ending **9740**, titled "MARCUS JAY HERRING LLC" per two Regions emails — strong evidence, not yet Marcus-confirmed as the LifeGreen Business product. (Account ending 8730, titled personally, is NOT the business account — has repeated overdraft alerts, keep separate.)
 
 **Action items:**
-- [ ] Business bank account opened (bring EIN letter + LLC formation docs)
+- [ ] **30-second check:** open the Regions app, confirm account 9740 is the LifeGreen Business product — this is the one open item, not opening a new account
 - [ ] All business income deposits to this account
 - [ ] All business expenses paid from this account (not personal card)
 

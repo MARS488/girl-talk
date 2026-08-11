@@ -7,6 +7,8 @@
 
 ## Foundation (Legal & Credentials)
 
+> These values are also held in the vault's **Entity Facts - Source of Truth** note, which is the actual authority per the vault's own rule ("fix a fact there first, never retype it elsewhere from memory"). Shown here for quick reference — if the two ever disagree, Entity Facts wins.
+
 ### ✅ Complete & Current
 
 | Item | Status | Details | Next Action |
