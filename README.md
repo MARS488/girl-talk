@@ -18,6 +18,25 @@
 
 ## The Toolkit (What's In This Repo)
 
+### 🌍 Global Operations (The Bigger Picture)
+Beyond drone jobs in Valdosta — this is the operating system for running ANY location-independent, contractor-fulfilled service business from anywhere in the world.
+
+- **GLOBAL_OPERATIONS_FRAMEWORK.md** — 10-layer architecture for global, contractor-based operations
+  - Legal structure, universal client intake, service catalog, contractor marketplace
+  - Automated contractor assignment, payment flow (client → you → contractor), compliance automation
+  - AI interface (JSON schemas, API endpoints), scaling model (solo → AI-managed), risk management
+  - Applies to drone work AND any other service (delivery, inspection, photography, technical audits, etc.)
+
+- **CONTRACTOR_AGREEMENT_TEMPLATE.md** — Signable independent contractor agreement
+  - Use for any contractor, any location, any service
+  - Covers relationship, compensation, insurance, IP, confidentiality, non-circumvention
+  - Includes Job Order template + localization notes for hiring outside the US
+
+- **AI_INTEGRATION_SPEC.md** — Machine-readable operating contract for AI/automation
+  - Canonical decision logic (flyability, contractor assignment, payments, quality) in pseudocode + JSON
+  - Explicit boundaries: what an AI can decide autonomously vs. what must escalate to Marcus
+  - Written for other AI systems/automation platforms to safely act on Marcus's behalf
+
 ### 🎯 Strategic Foundation
 Start here to understand the business opportunity and execution path.
 
@@ -243,6 +262,10 @@ Executable code and templates.
 | **START HERE** |
 | Fastest path to live (30 min)? | QUICK_START_PHONE_OPERATIONS.md |
 | Full automation roadmap (phases 0-4)? | AUTOMATION_ROADMAP.md |
+| **Global / Contractor Operations** |
+| Run business anywhere with contractors? | GLOBAL_OPERATIONS_FRAMEWORK.md |
+| Contractor legal agreement? | CONTRACTOR_AGREEMENT_TEMPLATE.md |
+| Spec for AI/automation to act on my behalf? | AI_INTEGRATION_SPEC.md |
 | **Getting Started / Launch** |
 | How to start (complete launch)? | STARTUP_CHECKLIST.md |
 | How to get insurance? | INSURANCE_PROCUREMENT_GUIDE.md |
