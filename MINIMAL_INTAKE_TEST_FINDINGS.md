@@ -47,4 +47,20 @@ A public-facing box the client actually types into. These MCP tools can create/u
 
 ---
 
-*Test artifact: Notion page `MJH-3`, prefixed `TEST -` per the existing convention so the drone-job-flow-watcher skips it. Delete once reviewed.*
+## Round 2 (2026-08-11, same day) — testing beyond the drone job database
+
+Marcus asked to run as many free tests as possible before insurance is paid for, against everything real that's connected, not just this repo. Four more tests, all read-only or self-cleaning:
+
+**1. Training Clients — Personal Training database (real, read-only check).** Queried both real rows. `Bill Herring` and `Jamie Herring` both still show `Status = Pending onboarding`, `Onboarding Packet Signed = No`, `Physician Clearance Received = No`. This confirms the roster-drift issue the vault already flagged (its own `Client-Roster.xlsx` says Jamie is "Active") is still live and unresolved — Notion is the more cautious value and is being treated as operative, per the vault's own standing rule. Not a new bug, but a real hiccup risk if left as-is: a client believing they're active to train while the system correctly says not-cleared. No test data was written to this database — it holds two real clients, so read-only only.
+
+**2. Dropbox storage (real, read-only check).** `/LLC Business/Drone Business Plan/` still contains the 929MB editing-templates zip and a 126MB video flagged in the vault back on 2026-08-05 — unaddressed. `Tax and Legal/` has the two real files the vault logged (EIN record, Part 107 cert). `Client and Financial/` is still empty. No quota-percentage tool was available to confirm the "over quota" claim precisely, but the specific large files it was attributed to are confirmed still present.
+
+**3. Real client-quote email, drafted not sent (Gmail, real account).** Created an actual Gmail draft (id `r7289739259783520909`) implementing the 3-tier package idea from Round 1 — Basic $250 / Standard $300 (matches the real baseline package) / Premium $450 (adds the named video tier the 2026-08-10 Competitor Scan flagged as missing). Draft created successfully with no formatting errors from the API side. **Marcus should open the draft once and eyeball it** — draft creation succeeding doesn't confirm visual rendering, only that Gmail accepted it. Clearly marked as a test in the subject line and body; safe to discard.
+
+**4. Scheduling automation, full create+delete cycle (Google Calendar, real account).** Created a private test event (`TEST - Flight Auto-Schedule Check`) with zero attendees, then deleted it — confirmed `status: cancelled` in the response. Proves the "auto-schedule the flight" step of the automation is mechanically sound and fully reversible, with no notifications sent to anyone (`notificationLevel: NONE`).
+
+**Net result:** nothing new broken. One already-known gap (training roster drift) reconfirmed still open. Everything tested this round is real infrastructure already connected — no new signups, no money spent.
+
+---
+
+*Test artifacts: Notion page `MJH-3` (drone job, prefixed `TEST -`), Gmail draft `r7289739259783520909` (marked test in subject/body). Both safe to delete/discard once reviewed. The calendar test event was already deleted by this session.*
