@@ -99,6 +99,41 @@ Keep operations smooth with minimal friction.
   - Monthly Breakdown
   - Partner Tracker
 
+### 🤖 Automation & Client Intake
+Automated systems for determining flyability and handling inquiries.
+
+- **CLIENT_FLYABILITY_FORM.md** — Client-facing Google Form (8 questions)
+  - Instant flyability determination for client's property
+  - Auto-response emails (FLYABLE / MARGINAL / NOT_FLYABLE)
+  - Connects to Google Sheets for intake tracking
+  - Setup: 30 minutes, fully automated by Phase 1
+
+- **FLYABILITY_CHECKER.md** — Marcus's manual 5-minute decision tree
+  - Use when checking if a property is flyable
+  - Sections: Airspace check (LAANC), Weather check, Site check, Business check
+  - Print & laminate, keep at desk
+  - Reference before quoting or declining
+
+- **AUTOMATED_INTAKE_FLOW.md** — Complete automation vision (Phases 0-4)
+  - Phase 0: Manual (baseline, 15-20 min/inquiry)
+  - Phase 1: Google Form + manual response (week 1, 10-15 min/inquiry)
+  - Phase 2: Zapier auto-responses (week 2-3, 5-7 min/inquiry)
+  - Phase 3: Automated flyability logic (week 4+, 1-2 min/inquiry)
+  - Phase 4: Full platform automation (month 2+, <1 min/inquiry)
+  - Scales from 3-5 inquiries/month (Phase 1) → 25+ inquiries/month (Phase 3)
+
+- **AUTOMATION_ROADMAP.md** — Phased implementation timeline
+  - Weekly rollout schedule (Phase 1 this week)
+  - Go/no-go decision points at each phase
+  - Success metrics, metrics dashboard, rollback strategy
+  - Start with Phase 1 (30 min Google Form setup)
+
+- **ZAPIER_WORKFLOWS.md** — Copy-paste Zapier configurations
+  - 5 ready-to-use workflows for Phase 2 (email automation)
+  - Mega-workflow template for Phase 3 (auto-decision logic)
+  - Lookup table setup (airspace, weather, pricing)
+  - Testing checklist, cost estimates, troubleshooting
+
 ### ⚙️ Tools & Calculators
 Executable code and templates.
 
@@ -113,24 +148,33 @@ Executable code and templates.
 
 ---
 
-## Quick Start (3 Steps)
+## Quick Start (4 Steps)
 
-### Step 1: Read These (1 hour)
+### Step 1: Read These (1.5 hours)
 1. This README
-2. STARTUP_CHECKLIST.md
-3. INSURANCE_PROCUREMENT_GUIDE.md
+2. AUTOMATION_ROADMAP.md (understand phased approach)
+3. STARTUP_CHECKLIST.md
+4. INSURANCE_PROCUREMENT_GUIDE.md
 
-### Step 2: Get Insurance (This Week)
+### Step 2: Set Up Automation Phase 1 (This Week - 30 min)
+- Follow AUTOMATION_ROADMAP.md "Week 1: Phase 1 Go-Live"
+- Create Google Form from CLIENT_FLYABILITY_FORM.md
+- Connect to Google Sheets
+- Set up Gmail notification filter
+- Test form submission
+
+### Step 3: Get Insurance (This Week)
 - Follow INSURANCE_PROCUREMENT_GUIDE.md
 - Call 3-4 carriers
 - Bind both policies by Friday (Aug 15)
 - Get certificates
 
-### Step 3: Execute (Week 3-4)
+### Step 4: Execute (Week 3-4)
 - Follow STARTUP_CHECKLIST.md Week 3-4
-- Fly 3 jobs (1 demo + 2 paid)
+- Fly 3 jobs (1 demo + 2 paid) using JOB_EXECUTION_PLAYBOOK.md
 - Collect feedback + payments
 - Log everything
+- Decide: Ready for Phase 2 automation (week 3)?
 
 ---
 
@@ -184,17 +228,28 @@ Executable code and templates.
 
 | Need | File |
 |------|------|
+| **Getting Started** |
 | How to start? | STARTUP_CHECKLIST.md |
 | How to get insurance? | INSURANCE_PROCUREMENT_GUIDE.md |
+| What's my status? | LLC_STATUS_DASHBOARD.md |
+| **Automation & Client Intake** |
+| Is a property flyable? | FLYABILITY_CHECKER.md |
+| Client assessment form? | CLIENT_FLYABILITY_FORM.md |
+| Automation phases (0-4)? | AUTOMATED_INTAKE_FLOW.md |
+| Implementation timeline? | AUTOMATION_ROADMAP.md |
+| Zapier workflow setup? | ZAPIER_WORKFLOWS.md |
+| **Job Execution** |
 | How to execute a job? | JOB_EXECUTION_PLAYBOOK.md |
 | How to quote a job? | UNIVERSAL_QUOTE_CALCULATOR.py |
 | How to track jobs? | JOB_STATUS_TRACKER.md |
 | What email to send? | EMAIL_TEMPLATES.md |
+| **Operations & Organization** |
 | How to stay organized? | SYSTEM_SETUP_GUIDE.md |
 | What to do each day? | DAILY_OPERATIONS_CHECKLIST.md |
+| Dashboard setup? | BUSINESS_DASHBOARD_SETUP.md |
+| **Strategy & Legal** |
 | What's my business strategy? | STRATEGIC_SYNTHESIS.md |
 | What's my legal foundation? | LLC_BUSINESS_STRUCTURE.md |
-| What's my status? | LLC_STATUS_DASHBOARD.md |
 
 ---
 
