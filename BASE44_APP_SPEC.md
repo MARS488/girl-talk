@@ -51,13 +51,17 @@ Owner {
 }
 ```
 
-## Pricing table (real numbers, not placeholders — from the actual business)
+## Pricing — DO NOT HARDCODE, pull from the live Price Card
 
-| Package | Price | What it includes |
-|---|---|---|
-| Quick Look | $149 | Aerial imagery + a short "what I'd flag" summary, 24–48 hr turnaround |
-| Full Assessment | $349 | Annotated findings, action table, PDF report, ~48 hr turnaround. **Pre-select this as the default** — it's the popular tier |
-| Seasonal Plan | $349/visit | Full Assessment repeated spring + fall |
+> ⚠️ **Corrected 2026-08-26.** This section previously listed specific prices ($149 / $349) copied from a note dated 2026-08-10. **Those numbers were already stale when written into this spec** — the real Price Card had moved to a different tier structure and different amounts. This is exactly the fact-drift failure the business's own `Entity Facts - Source of Truth` discipline exists to prevent, reproduced here by copying a number instead of referencing its source.
+
+**Build rule: the app must read its price tiers from a single configurable source (an admin-editable settings table or config record), not from values compiled into the client or the codebase.** Marcus updates prices in one place; the intake screen and the quote both read from it.
+
+**Before building, pull the current tier names and amounts from `Price Card & Rate Model.xlsx` (read its "Do Not Quote" sheet first) — do not use any number from this document or any other secondhand copy.**
+
+Also configurable, not hardcoded — because these genuinely change:
+- **Currency** — the app should store an explicit currency code with every price and every transaction, not assume one. Accepted rails (bank transfer, card, cash, crypto) each carry their own compliance handling; don't assume they're interchangeable.
+- **Tax treatment** — whether a given service is taxable, and at what rate, varies and changes. Quote **tax-inclusive** ("$X all in") rather than "plus tax," and never collect a tax the business isn't registered to collect.
 
 Price is set server-side from `package_tier` — never accept a client-submitted price.
 
