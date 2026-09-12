@@ -3,19 +3,45 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Angel Blue Jay — Portfolio (coming soon)</title>
+  <title>Angel Blue Jay — Aerial Portfolio</title>
   <style>
     :root { color-scheme: light dark; font-family: system-ui, sans-serif; }
-    body { max-width: 42rem; margin: 3rem auto; padding: 0 1.25rem; line-height: 1.5; }
-    h1 { font-size: 1.5rem; margin-bottom: 0.25rem; }
+    body { max-width: 56rem; margin: 2rem auto; padding: 0 1.25rem 3rem; line-height: 1.5; }
+    h1 { font-size: 1.6rem; margin-bottom: 0.15rem; }
     .muted { opacity: 0.75; font-size: 0.95rem; }
-    code { font-size: 0.9em; }
+    .card { margin: 0.35rem 0 1.25rem; padding: 0.75rem 0.9rem; border: 1px solid color-mix(in srgb, currentColor 18%, transparent); border-radius: 10px; }
+    .grid { display: grid; gap: 1.25rem; margin-top: 1.5rem; }
+    @media (min-width: 720px) { .grid { grid-template-columns: 1fr 1fr; } }
+    figure { margin: 0; }
+    img { width: 100%; height: auto; border-radius: 8px; display: block; }
+    figcaption { font-size: 0.9rem; margin-top: 0.45rem; }
+    code { font-size: 0.85em; }
   </style>
 </head>
 <body>
   <h1>Angel Blue Jay</h1>
   <p class="muted">Aerial property documentation · Marcus Jay Herring, LLC · Valdosta, GA</p>
-  <p>Portfolio page stub. Full capability gallery (images + categories) lands after the curated Dropbox package is synced into this repo.</p>
-  <p class="muted">Pricing (locked): Quick Look $175 · Full Assessment $325 · Seasonal $299/visit</p>
+
+  <div class="card">
+    <strong>CivilitySync packages</strong> (this page): Quick Look $175 · Full Assessment $325 · Seasonal $299/visit<br />
+    <span class="muted">Herring Drones service rates are a <em>separate</em> price card — always quote the named card; do not mix.</span>
+  </div>
+
+  <p>Live gallery from Dropbox portfolio files already on hand (3 RaceTrac arc shots). More categories land as Marcus drops the curated package into <code>/LLC Business/Portfolio/</code>.</p>
+
+  <div class="grid">
+    <figure>
+      <img src="portfolio/racetrac-tank-wide-web.jpg" alt="RaceTrac fuel tank install wide view May 2025" />
+      <figcaption><strong>Construction-Site Progress</strong> — RaceTrac fuel tank install (2025-05-22), wide</figcaption>
+    </figure>
+    <figure>
+      <img src="portfolio/racetrac-tank-close-web.jpg" alt="RaceTrac fuel tank install close view May 2025" />
+      <figcaption><strong>Construction-Site Progress</strong> — RaceTrac fuel tank install (2025-05-22), close</figcaption>
+    </figure>
+    <figure>
+      <img src="portfolio/racetrac-finished-web.jpg" alt="RaceTrac finished station pre-opening November 2025" />
+      <figcaption><strong>Business &amp; Marketing</strong> — RaceTrac finished, pre-opening (2025-11-05)</figcaption>
+    </figure>
+  </div>
 </body>
 </html>
