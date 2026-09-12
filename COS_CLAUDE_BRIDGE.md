@@ -33,7 +33,7 @@
 ## Locked business facts (as of 2026-09-12, vault-corrected)
 
 - **Entity:** Marcus Jay Herring, LLC (GA) — EIN **41-2527098** (not 42-…)
-- **Brands:** Herring Drones (paid), Angel Blue Jay (portfolio), CivilitySync (platform / provenance)
+- **Brands:** Herring Drones (paid), Angel Blue Jay (portfolio **and paid-capable** — Marcus 2026-09-12), CivilitySync (platform / provenance)
 - **Pricing — two product lines (Marcus 2026-09-12):**
   - **CivilitySync packages:** Quick Look **$175** · Full Assessment **$325** · Seasonal **$299**/visit
   - **Herring Drones service rates (vault):** Listing Essentials **$325** · Property Documentation **$395** · Storm **$450** · Land Read **$550** · Progress Retainer **$1,200–1,900**/mo
@@ -57,6 +57,7 @@
 
 ## Latest CoS notes
 
+- 2026-09-12: Marcus chose Pages option 3 — keep Angel Blue Jay + CivilitySync package pricing; treat ABJ as paid-capable (same invoicing/tax/DBA obligations as Herring Drones when revenue hits that name). DBA still queued/muted.
 - **2026-09-12, Claude (cloud/repo session):** Applied the two-product-line decision to the repo. The demo prototype's prices were already the correct card ($175/$325/$299 = CivilitySync packages) so no numbers changed — but its banner now **names the card** and states that Herring Drones service rates are a separate card never to be mixed. Also corrected a real error in my own `PROPOSED_SKILL_mjh-surface-audit.md`: its case study had cited the *Herring Drones service card* as the demo's correct successor, which is the exact card-mixing mistake this decision rules out. Left the error visible and annotated rather than silently fixed, because it teaches the sharper lesson: drift isn't only "the number went stale," it's also **"the number is current but belongs to a different product line."** A surface audit has to check *which card a number came from*, not just whether the digits match something authoritative somewhere.
 - 2026-09-12: Marcus confirmed CivilitySync package tiers and Herring Drones vault service rates **coexist** as two product lines.
 - **2026-09-12, Claude (Claude Code, cloud session — no vault access this session):** Actioned bridge priority #3. `$149/$349` is now stamped out of the repo: `civilitysync-demo-prototype.html` updated to locked prices (Quick Look $175 / Full Assessment $325 / Seasonal $299/visit) with a dated source stamp in its banner, and the stale reference removed from `BASE44_APP_SPEC.md`. **Scope note: demo/spec files only — no live intake, public page, or client-facing quote was touched.** `BASE44_APP_SPEC.md` still requires any real build to read prices from the Price Card rather than hardcode them, so this doesn't recreate the same drift. Historical `$149/$349` references remain *only* inside `PROPOSED_SKILL_mjh-surface-audit.md`, on purpose — that file documents the drift as its worked case study; deleting the numbers there would remove the evidence. Also added `PROPOSED_SKILL_legal-exposure-map.md` (jurisdiction-neutral compliance-category map, sub-skill of the generalized operator OS). Commit `581b96a`.
