@@ -292,7 +292,7 @@
 
 <div class="demo-bar ui">
   <span class="tag">Demo</span>
-  <span>Prototype only — no submission is sent, nothing is booked, no real data leaves this page. <strong>Prices shown are stale placeholders</strong> (from a 2026-08-10 note) and do not match the current Price Card — do not quote from this page.</span>
+  <span>Prototype only — no submission is sent, nothing is booked, no real data leaves this page. <strong>Prices as locked 2026-09-12</strong> (CoS↔Claude bridge). A real build must read these from the Price Card, not hardcode them — see BASE44_APP_SPEC.md.</span>
 </div>
 
 <div class="wrap">
@@ -341,24 +341,24 @@
       <fieldset>
         <label class="field-label">Package</label>
         <div class="opt-group" id="package">
-          <button class="opt" type="button" data-pkg="quick" data-price="149" aria-pressed="false">
+          <button class="opt" type="button" data-pkg="quick" data-price="175" aria-pressed="false">
             <span class="dot"></span>
             <span class="opt-body">
-              <span class="opt-title">Quick Look <span class="opt-price">$149</span></span>
+              <span class="opt-title">Quick Look <span class="opt-price">$175</span></span>
               <span class="opt-desc">Aerial imagery + a short "what I'd flag" summary. 24–48 hrs.</span>
             </span>
           </button>
-          <button class="opt" type="button" data-pkg="full" data-price="349" aria-pressed="true">
+          <button class="opt" type="button" data-pkg="full" data-price="325" aria-pressed="true">
             <span class="dot"></span>
             <span class="opt-body">
-              <span class="opt-title">Full Assessment <span class="opt-price">$349</span></span>
+              <span class="opt-title">Full Assessment <span class="opt-price">$325</span></span>
               <span class="opt-desc">Annotated findings, action table, PDF report. ~48 hrs. (Most popular)</span>
             </span>
           </button>
-          <button class="opt" type="button" data-pkg="seasonal" data-price="349" aria-pressed="false">
+          <button class="opt" type="button" data-pkg="seasonal" data-price="299" aria-pressed="false">
             <span class="dot"></span>
             <span class="opt-body">
-              <span class="opt-title">Seasonal Plan <span class="opt-price">$349<span style="font-size:0.72rem;color:var(--ink-soft);">/visit</span></span></span>
+              <span class="opt-title">Seasonal Plan <span class="opt-price">$299<span style="font-size:0.72rem;color:var(--ink-soft);">/visit</span></span></span>
               <span class="opt-desc">Full Assessment, repeated spring &amp; fall — catches issues while they're small. Billed per visit.</span>
             </span>
           </button>
@@ -382,7 +382,7 @@
         </div>
         <div style="text-align:right">
           <div class="lbl">Estimate</div>
-          <div class="price" id="t-price">$149</div>
+          <div class="price" id="t-price">$325</div>
         </div>
       </div>
 
@@ -404,7 +404,7 @@
 
 <script>
 (function(){
-  var state = { jobtype: 'assessment', pkg: 'full', price: 349, addr: document.getElementById('addr').value };
+  var state = { jobtype: 'assessment', pkg: 'full', price: 325, addr: document.getElementById('addr').value };
 
   var PKG_TURN = { quick: '24–48 hrs', full: '~48 hrs', seasonal: '~48 hrs, spring + fall' };
 

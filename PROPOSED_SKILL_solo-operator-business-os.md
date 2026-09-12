@@ -31,6 +31,8 @@ PRICING MODEL:              [link to an external price sheet — never restate n
 
 **Rule: if any verdict below needs one of these values and it isn't filled in, the correct answer is "I don't know, and neither should you assume" — not a guess.**
 
+**Every legally-loaded slot above (jurisdiction, licensing, tax registration, payment rails, insurance) is filled in and kept current via the `legal-exposure-map` sub-skill.** That sub-skill deliberately does not state what the law is — it names what must be checked, where the primary source is, and when the last check happened, so a stale answer announces itself instead of quietly becoming wrong. Never fill these slots from an AI's summary, from this file, or from any secondhand source.
+
 ---
 
 # THE FIVE VERDICTS (generalized)
