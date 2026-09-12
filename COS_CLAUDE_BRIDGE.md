@@ -34,8 +34,10 @@
 
 - **Entity:** Marcus Jay Herring, LLC (GA) — EIN **41-2527098** (not 42-…)
 - **Brands:** Herring Drones (paid), Angel Blue Jay (portfolio), CivilitySync (platform / provenance)
-- **Pricing locked:** Quick Look **$175** · Full Assessment **$325** · Seasonal **$299**/visit  
-  - **`$149 / $349` is dead/stale** — stamp out wherever it lingers; not a live conflict to resolve
+- **Pricing — two product lines (Marcus 2026-09-12):**
+  - **CivilitySync packages:** Quick Look **$175** · Full Assessment **$325** · Seasonal **$299**/visit
+  - **Herring Drones service rates (vault):** Listing Essentials **$325** · Property Documentation **$395** · Storm **$450** · Land Read **$550** · Progress Retainer **$1,200–1,900**/mo
+  - Always quote the **named card**; do not mix. **`$149 / $349` is dead/stale**
 - **Insurance / first-flight:** unbound remains true on paperwork, but **muted as next-action nags** (AI HANDOFF 2026-09-06). Do not raise as CoS #1.
 - **Part 107:** #5051412, issued 2025-11-03; recurrent ~Nov 2027
 - **Revenue:** $0 real jobs; Drone Jobs has example/test rows only
@@ -55,6 +57,7 @@
 
 ## Latest CoS notes
 
+- 2026-09-12: Marcus confirmed CivilitySync package tiers and Herring Drones vault service rates **coexist** as two product lines.
 - **2026-09-12, Claude (Claude Code, cloud session — no vault access this session):** Actioned bridge priority #3. `$149/$349` is now stamped out of the repo: `civilitysync-demo-prototype.html` updated to locked prices (Quick Look $175 / Full Assessment $325 / Seasonal $299/visit) with a dated source stamp in its banner, and the stale reference removed from `BASE44_APP_SPEC.md`. **Scope note: demo/spec files only — no live intake, public page, or client-facing quote was touched.** `BASE44_APP_SPEC.md` still requires any real build to read prices from the Price Card rather than hardcode them, so this doesn't recreate the same drift. Historical `$149/$349` references remain *only* inside `PROPOSED_SKILL_mjh-surface-audit.md`, on purpose — that file documents the drift as its worked case study; deleting the numbers there would remove the evidence. Also added `PROPOSED_SKILL_legal-exposure-map.md` (jurisdiction-neutral compliance-category map, sub-skill of the generalized operator OS). Commit `581b96a`.
   - ⚠️ **Possible pricing conflict for Marcus to settle, not for either AI to resolve:** this bridge locks Quick Look $175 / Full Assessment $325 / Seasonal $299. The vault's `mjh-operate` master skill (last verified against disk 2026-08-24) lists a different set — Listing Essentials $325 · Property Documentation $395 · Storm $450 · Land Read $550 · Progress Retainer $1,200–1,900/mo. These may be two different product lines (CivilitySync package tiers vs. Herring Drones service rates) rather than a contradiction — but nothing states that explicitly, and an AI guessing which applies to a given quote is exactly how a wrong number reaches a client. **Marcus: confirm whether these coexist or one supersedes the other.**
 - 2026-09-12: CoS connected Dropbox, Notion, Google Drive, GitHub (`MARS488`). Deep-dived LLC ops. Cleared ~1 GB Dropbox bloat (duplicate DPA zip + LLC copy of Jan 03 video). Established this bridge + Dropbox dialogue.
