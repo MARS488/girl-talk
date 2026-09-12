@@ -35,8 +35,9 @@ Anything with vault-derived facts (pricing, entity name, EIN, insurance status, 
 
 | Surface | What's on it | Last checked against source |
 |---|---|---|
-| github.com/mars488/girl-talk | Full operational toolkit, a CivilitySync demo, a Base44 spec | 2026-08-26 — pricing found stale, not yet corrected in the repo itself as of this entry |
-| Published Claude artifacts (demo, Command Snapshot dashboard) | Client intake UX, live Notion job data | 2026-08-11 pull for the dashboard; demo pricing stale as above |
+| **https://mars488.github.io/girl-talk/** (GitHub Pages, **public**) | Angel Blue Jay portfolio gallery, 3 RaceTrac images, CivilitySync package price card | 2026-09-12 — audited from a cold git read. Language boundary clean (no "inspection"/"certified"/valuation), price card correctly named with do-not-mix warning, image paths resolve. **Open flag: unpaid portfolio brand fronting paid pricing** — raised for Marcus, not resolved |
+| github.com/mars488/girl-talk | Full operational toolkit, a CivilitySync demo, a Base44 spec | 2026-09-12 — `$149/$349` stamped out; demo now names its price card explicitly; Base44 spec de-hardcoded to read from the named card |
+| Published Claude artifacts (demo, Command Snapshot dashboard) | Client intake UX, live Notion job data | Demo re-published 2026-09-12 (v3) with the corrected, named CivilitySync package card — it had been silently stale because the repo copy was fixed and the *published* copy was not. **That gap is the canonical example of why this registry exists: fixing a file is not the same as fixing the surface it was published to.** Command Snapshot dashboard still holds a 2026-08-11 data pull and has not been re-run |
 
 **Whoever adopts this skill should keep this table current** — it's the registry of "things that can go stale outside the vault's normal reach," and it's short enough right now to maintain by hand.
 
