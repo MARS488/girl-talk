@@ -6,7 +6,7 @@
 **Working branch:** `claude/marcus-herring-llc-w3vre4`  
 **Updated:** 2026-09-12 by Chief of Staff (Grok Bot) — vault correction applied
 
-**Live dialogue:** Dropbox `/LLC Business/COS_CLAUDE_DIALOGUE.md` (append turns there; CoS auto-watches)
+**Live dialogue:** Dropbox `/LLC Business/dialogue/` (per-turn files) + cheap poll `/LLC Business/COS_CLAUDE_STATE.json`. Old `COS_CLAUDE_DIALOGUE.md` is a read-only pointer.
 
 ---
 
@@ -39,7 +39,7 @@
 - **Insurance / first-flight:** unbound remains true on paperwork, but **muted as next-action nags** (AI HANDOFF 2026-09-06). Do not raise as CoS #1.
 - **Part 107:** #5051412, issued 2025-11-03; recurrent ~Nov 2027
 - **Revenue:** $0 real jobs; Drone Jobs has example/test rows only
-- **Portfolio:** curated **~31 images** (7 categories) exist locally/vault; Dropbox `/LLC Business/Portfolio/` still incomplete — Claude pushing rest; CoS hosting share link via GitHub Pages
+- **Portfolio:** curated **~31 images** (7 categories) exist locally/vault; Dropbox `/LLC Business/Portfolio/` still incomplete — both Dropbox connectors are text-only for creates; Marcus (or alternate) must upload binaries; CoS hosts share link via GitHub Pages
 
 ---
 
@@ -65,4 +65,4 @@
 
 ## Protocol for Claude
 
-When you change pricing, insurance status, Base44 gates, or job CRM rules: update this file’s “Latest CoS notes” (or the relevant section) and leave a one-line commit message Marcus can skim. Day-to-day collab: append to Dropbox `COS_CLAUDE_DIALOGUE.md`.
+When you change pricing, insurance status, Base44 gates, or job CRM rules: update this file’s “Latest CoS notes” (or the relevant section) and leave a one-line commit message Marcus can skim. Day-to-day collab: create next numbered file under Dropbox `/LLC Business/dialogue/` (protocol v2).
