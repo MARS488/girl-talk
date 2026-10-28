@@ -45,6 +45,13 @@
     .step{font-weight:800;color:var(--sky);font-size:1.6rem;line-height:1}
     .not{color:var(--muted);font-size:.95rem}
     footer{border-top:1px solid var(--line);padding:2rem 0 3rem;color:var(--muted);font-size:.88rem}
+    .trust{background:#0e2238;border-bottom:1px solid var(--line);padding:.8rem 0;text-align:center;color:var(--sky2);font-size:.9rem;font-weight:600}
+    .tier{position:relative}.tier .amt{font-size:2rem;font-weight:800;color:#fff}.tier.pop{border-color:var(--sky)}
+    .pill{position:absolute;top:-.7rem;right:1rem;background:var(--sky);color:#04121f;font-size:.72rem;font-weight:800;padding:.2rem .6rem;border-radius:999px;text-transform:uppercase}
+    .addons{display:flex;flex-wrap:wrap;gap:.5rem;list-style:none;padding:0;margin:.8rem 0 0}.addons li{border:1px solid var(--line);border-radius:999px;padding:.3rem .8rem;font-size:.88rem;color:var(--muted)}
+    details{border-bottom:1px solid var(--line);padding:.9rem 0}summary{cursor:pointer;font-weight:700}details p{color:var(--muted);margin:.5rem 0 0}
+    .sticky{display:none}
+    @media(max-width:640px){.sticky{display:block;position:fixed;left:1rem;right:1rem;bottom:1rem;z-index:20;text-align:center;box-shadow:0 8px 24px rgba(0,0,0,.4)}body{padding-bottom:5rem}}
   </style>
 </head>
 <body>
@@ -67,6 +74,23 @@
         <span class="badge">FAA Part 107 certified remote pilot</span>
       </div>
     </div>
+
+    <div class="trust">FAA Part 107 certified · Marcus Jay Herring, LLC · Fast delivery · Free travel first 25 miles</div>
+
+    <section id="start">
+      <div class="wrap">
+        <h2>Start here</h2>
+        <p class="sub">Published prices. No sales calls. No surprises.</p>
+        <div class="grid three">
+          <div class="card tier"><h3>Job minimum</h3><div class="amt">$125</div><p>The smallest job we book. The $100 aerial add-on for a ground shoot is the one exception.</p></div>
+          <div class="card tier"><h3>Essentials</h3><div class="amt">$150</div><p>Property aerial photos: 10 edited photos.</p></div>
+          <div class="card tier pop"><span class="pill">Most popular</span><h3>Standard</h3><div class="amt">$250</div><p>Property aerial photos: 20 photos + 30-sec clip.</p></div>
+        </div>
+        <h3 style="margin:1.5rem 0 0">Add-ons</h3>
+        <ul class="addons"><li>Extra photo $10</li><li>30-sec clip $75</li><li>60–90 sec video $150</li><li>Laminated print $25</li><li>Extra hour on site $100</li></ul>
+        <p class="not" style="margin-top:1.2rem"><strong>Travel:</strong> first 25 miles one way included; past that $1.25 per mile, round trip. Serving Valdosta, Hahira, Lake Park, Quitman, Adel, Moultrie, Tifton, and Thomasville.</p>
+      </div>
+    </section>
 
     <section id="services">
       <div class="wrap">
@@ -119,7 +143,16 @@
           <div class="card"><div class="step">2</div><h3>We fly</h3><p>A Part 107 certified pilot captures the site, checking airspace and weather first.</p></div>
           <div class="card"><div class="step">3</div><h3>You get the pack</h3><p>Edited, date-stamped photos and video in organized folders, ready to share with an owner, lender, or crew.</p></div>
         </div>
-        <p class="not" style="margin-top:1.5rem">Not a land survey, inspection, acreage or boundary determination, stamped report, takeoff, or measurement set. Photos and a plain-language note on what looks different — that's the pack.</p>
+        <p class="not" style="margin-top:1.5rem">Not a land survey, acreage or boundary determination, stamped report, takeoff, or measurement set. Photos and a plain-language note on what looks different — that's the pack.</p>
+      </div>
+    </section>
+
+    <section id="faq">
+      <div class="wrap">
+        <h2>FAQ</h2>
+        <details><summary>Are you licensed?</summary><p>Yes. FAA Part 107 certified remote pilot.</p></details>
+        <details><summary>Can you fly near the airport or Moody?</summary><p>We check airspace before every job and handle the FAA authorizations needed for controlled airspace.</p></details>
+        <details><summary>How fast do I get my files?</summary><p>Fast turnaround. Need it sooner? Rush is available: within 48 hours +25% · storm 24-hour +$100.</p></details>
       </div>
     </section>
 
@@ -133,6 +166,9 @@
       </div>
     </section>
   </main>
+
+  <!-- PHONE PLACEHOLDER: set tel: link once Marcus confirms his number. -->
+  <a class="btn sticky" href="#contact">Call or text</a>
 
   <footer>
     <div class="wrap">Aerial Ops · Aerial Operations by Marcus Jay Herring, LLC · 601 N. St. Augustine Rd., Valdosta, GA 31601 · FAA Part 107 certified</div>
